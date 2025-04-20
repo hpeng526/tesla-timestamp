@@ -64,13 +64,21 @@ process_directory() {
             # 优化画质参数(保持GPU加速)
             # 这部分明确使用了h264_videotoolbox
             # 使用GPU加速处理
+            # ffmpeg -hwaccel videotoolbox -i "$video" \
+            #     -vf "drawtext=fontfile=/System/Library/Fonts/PingFang.ttc:font=PingFang SC: \
+            #         text='%{pts\:localtime\:$(date -j -f "%Y-%m-%d %H:%M:%S" "$date $hour:$minute:$second" +%s)}': \
+            #         x=10: y=10: fontsize=24: fontcolor=white: box=1: boxcolor=black@0.5, \
+            #         drawtext=fontfile=/System/Library/Fonts/PingFang.ttc:font=PingFang SC: \
+            #         text='${location:-位置信息获取失败}': \
+            #         x=10: y=40: fontsize=24: fontcolor=white: box=1: boxcolor=black@0.5" \
+            #     -c:v h264_videotoolbox -b:v 5000k -maxrate 8000k -bufsize 8000k \
+            #     -profile:v main -pix_fmt yuv420p -color_range mpeg \
+            #     -movflags +faststart -c:a copy \
+            #     "$output"
             ffmpeg -hwaccel videotoolbox -i "$video" \
                 -vf "drawtext=fontfile=/System/Library/Fonts/PingFang.ttc:font=PingFang SC: \
                     text='%{pts\:localtime\:$(date -j -f "%Y-%m-%d %H:%M:%S" "$date $hour:$minute:$second" +%s)}': \
-                    x=10: y=10: fontsize=24: fontcolor=white: box=1: boxcolor=black@0.5, \
-                    drawtext=fontfile=/System/Library/Fonts/PingFang.ttc:font=PingFang SC: \
-                    text='${location:-位置信息获取失败}': \
-                    x=10: y=40: fontsize=24: fontcolor=white: box=1: boxcolor=black@0.5" \
+                    x=10: y=10: fontsize=48: fontcolor=white: box=1: boxcolor=black@0.5" \
                 -c:v h264_videotoolbox -b:v 5000k -maxrate 8000k -bufsize 8000k \
                 -profile:v main -pix_fmt yuv420p -color_range mpeg \
                 -movflags +faststart -c:a copy \

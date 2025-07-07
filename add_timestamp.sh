@@ -20,32 +20,32 @@ fi
 # 处理目录
 process_directory() {
     local dir="$1"
-    local event_file="$dir/event.json"
+    # local event_file="$dir/event.json"
     
-    # 获取位置信息 (显示详细地址+经纬度)
-    local location=""
-    if [ -f "$event_file" ]; then
-        local lat=$(jq -r '.est_lat' "$event_file")
-        local lon=$(jq -r '.est_lon' "$event_file")
+    # # 获取位置信息 (显示详细地址+经纬度)
+    # local location=""
+    # if [ -f "$event_file" ]; then
+    #     local lat=$(jq -r '.est_lat' "$event_file")
+    #     local lon=$(jq -r '.est_lon' "$event_file")
         
-        if [ "$lat" != "null" ] && [ "$lon" != "null" ]; then
-            # 获取完整详细地址
-            location=$(curl -s --max-time 5 --retry 2 "https://nominatim.openstreetmap.org/reverse?format=json&lat=$lat&lon=$lon" | 
-                      jq -r '.display_name' | tr -d '\n')
+    #     if [ "$lat" != "null" ] && [ "$lon" != "null" ]; then
+    #         # 获取完整详细地址
+    #         location=$(curl -s --max-time 5 --retry 2 "https://nominatim.openstreetmap.org/reverse?format=json&lat=$lat&lon=$lon" | 
+    #                   jq -r '.display_name' | tr -d '\n')
             
-            if [ -z "$location" ]; then
-                location=$(printf "位置: %.4f°N, %.4f°E" $lat $lon)
-            else
-                # 保留完整地址并添加经纬度
-                location="${location} (${lat}, ${lon})"
-            fi
-            echo "获取到位置信息: $location"
-        else
-            location="位置信息不可用"
-        fi
-    else
-        location="无event.json文件"
-    fi
+    #         if [ -z "$location" ]; then
+    #             location=$(printf "位置: %.4f°N, %.4f°E" $lat $lon)
+    #         else
+    #             # 保留完整地址并添加经纬度
+    #             location="${location} (${lat}, ${lon})"
+    #         fi
+    #         echo "获取到位置信息: $location"
+    #     else
+    #         location="位置信息不可用"
+    #     fi
+    # else
+    #     location="无event.json文件"
+    # fi
 
     # 处理视频文件
     for video in "$dir"/*.mp4; do
@@ -75,10 +75,10 @@ process_directory() {
             #     -profile:v main -pix_fmt yuv420p -color_range mpeg \
             #     -movflags +faststart -c:a copy \
             #     "$output"
-            ffmpeg -hwaccel videotoolbox -i "$video" \
+             ffmpeg -hwaccel videotoolbox -i "$video" \
                 -vf "drawtext=fontfile=/System/Library/Fonts/PingFang.ttc:font=PingFang SC: \
                     text='%{pts\:localtime\:$(date -j -f "%Y-%m-%d %H:%M:%S" "$date $hour:$minute:$second" +%s)}': \
-                    x=10: y=10: fontsize=48: fontcolor=white: box=1: boxcolor=black@0.5" \
+                    x=10: y=10: fontsize=50: fontcolor=white: box=1: boxcolor=black@0.5" \
                 -c:v h264_videotoolbox -b:v 5000k -maxrate 8000k -bufsize 8000k \
                 -profile:v main -pix_fmt yuv420p -color_range mpeg \
                 -movflags +faststart -c:a copy \

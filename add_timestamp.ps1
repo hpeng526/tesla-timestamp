@@ -144,6 +144,9 @@ function Process-TeslaCamDirectory {
 
                 Write-Host "Processing: $filename"
 
+                # Escape the font path for ffmpeg on Windows to handle the drive letter colon (e.g., C:)
+                $escapedFontPath = $fontPath.Replace(':', '\:')
+
                 # FFmpeg command for Windows.
                 # -hwaccel can be changed for hardware acceleration if your ffmpeg build supports it.
                 # For NVIDIA: -hwaccel cuda -c:v h264_nvenc
@@ -152,7 +155,7 @@ function Process-TeslaCamDirectory {
                 # Using software encoding (libx264) for broad compatibility.
                 $ffmpegArgs = @(
                     '-i', "$video",
-                    '-vf', "drawtext=fontfile='$fontPath':text='%{{pts\:localtime\:$unixTimestamp}}':x=10:y=10:fontsize=50:fontcolor=white:box=1:boxcolor=black@0.5",
+                    '-vf', "drawtext=fontfile='$escapedFontPath':text='%{pts\:localtime\:$unixTimestamp}':x=10:y=10:fontsize=50:fontcolor=white:box=1:boxcolor=black@0.5",
                     '-c:v', 'libx264', # Software encoder for compatibility
                     '-preset', 'fast', # Encoding speed/quality trade-off
                     '-crf', '22', # Constant Rate Factor for quality (lower is better)
@@ -179,11 +182,25 @@ if (-not (Test-Path $Directory -PathType Container)) {
     exit 1
 }
 
-# Find all directories matching the TeslaCam format and process them
-Write-Host "Starting to process directories in $Directory..."
-Get-ChildItem -Path $Directory -Directory -Recurse | Where-Object { $_.Name -match '^\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}$' } | ForEach-Object {
-    Write-Host "-- Found directory: $($_.FullName) --"
-    Process-TeslaCamDirectory -DirPath $_.FullName
+$dirInfo = Get-Item -Path $Directory
+
+# Check if the provided directory itself is a TeslaCam directory
+if ($dirInfo.Name -match '^\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}$') {
+    Write-Host "-- Processing single directory: $($dirInfo.FullName) --"
+    Process-TeslaCamDirectory -DirPath $dirInfo.FullName
+} else {
+    # Find all subdirectories matching the TeslaCam format and process them
+    Write-Host "Starting to search for directories in $Directory..."
+    $subDirs = Get-ChildItem -Path $Directory -Directory -Recurse | Where-Object { $_.Name -match '^\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}$' }
+    
+    if ($null -eq $subDirs) {
+        Write-Host "No subdirectories matching the TeslaCam format (YYYY-MM-DD_HH-MM-SS) were found in '$Directory'."
+    } else {
+        $subDirs | ForEach-Object {
+            Write-Host "-- Found directory: $($_.FullName) --"
+            Process-TeslaCamDirectory -DirPath $_.FullName
+        }
+    }
 }
 
 Write-Host "All videos processed."

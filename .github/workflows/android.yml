@@ -43,6 +43,9 @@ jobs:
 
       - name: Build APKs (signed release + debug)
         working-directory: android
+        env:
+          # 打标签构建时版本号跟随标签（v1.0.0 -> 1.0.0），其余用 1.0.<构建号>
+          VERSION_NAME: ${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || '' }}
         run: ./gradlew :app:assembleRelease :app:assembleDebug --no-daemon --console=plain
 
       - name: Verify release signature

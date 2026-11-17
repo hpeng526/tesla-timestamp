@@ -7,7 +7,11 @@ plugins {
 // versionCode 必须递增，否则手机上覆盖安装会失败。
 val buildNumber: Int = (System.getenv("BUILD_NUMBER") ?: "0").toIntOrNull() ?: 0
 val appVersionCode: Int = 1 + buildNumber
-val appVersionName: String = if (buildNumber == 0) "1.0.0" else "1.0.$buildNumber"
+// 打标签构建时由 CI 传入 VERSION_NAME（如 v1.0.0），其余情况用 1.0.<构建号>
+val taggedVersion: String? = System.getenv("VERSION_NAME")
+    ?.removePrefix("v")
+    ?.takeIf { it.isNotBlank() }
+val appVersionName: String = taggedVersion ?: if (buildNumber == 0) "1.0.0" else "1.0.$buildNumber"
 
 android {
     namespace = "com.teslacam.timestamp"

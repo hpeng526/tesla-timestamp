@@ -41,17 +41,16 @@ jobs:
         working-directory: android
         run: ./gradlew :app:testDebugUnitTest --no-daemon --console=plain
 
-      - name: Build debug and release APKs
+      - name: Build APKs (signed release + debug)
         working-directory: android
-        run: ./gradlew :app:assembleDebug :app:assembleRelease --no-daemon --console=plain
+        run: ./gradlew :app:assembleRelease :app:assembleDebug --no-daemon --console=plain
 
-      - name: Read version
-        id: version
+      - name: Verify release signature
         working-directory: android
         run: |
-          VERSION=$(grep -oP 'versionName\s*=\s*"\K[^"]+' app/build.gradle.kts || echo "1.0.0")
-          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
-          echo "versionName=$VERSION (versionCode=$((1 + BUILD_NUMBER)))"
+          APK=app/build/outputs/apk/release/app-release.apk
+          ${ANDROID_HOME}/build-tools/34.0.0/apksigner verify --print-certs "$APK"
+          ${ANDROID_HOME}/build-tools/34.0.0/aapt2 dump badging "$APK" | head -1
 
       - name: Upload unit test report
         if: always()
@@ -61,22 +60,21 @@ jobs:
           path: android/app/build/reports/tests/
           if-no-files-found: ignore
 
+      - name: Upload release APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: tesla-timestamp-release-apk
+          path: android/app/build/outputs/apk/release/*.apk
+          if-no-files-found: error
+
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
           name: tesla-timestamp-debug-apk
           path: android/app/build/outputs/apk/debug/*.apk
-          if-no-files-found: error
-
-      - name: Upload unsigned release APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: tesla-timestamp-release-unsigned-apk
-          path: android/app/build/outputs/apk/release/*.apk
           if-no-files-found: warn
 
-  # 每次 push 到 main 自动发布一个「最新构建」滚动 Release（tag: latest-build），
-  # 不需要手动打 tag，手机上直接下载安装。
+  # 每次 push 到 main 自动更新滚动 Release（tag: latest-build），无需手动打 tag
   rolling-release:
     name: Publish rolling release (main)
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -86,17 +84,17 @@ jobs:
       contents: write
 
     steps:
-      - name: Download debug APK
+      - name: Download release APK
         uses: actions/download-artifact@v4
         with:
-          name: tesla-timestamp-debug-apk
+          name: tesla-timestamp-release-apk
           path: dist
 
       - name: Rename APK with version and commit
         run: |
           cd dist
           for f in *.apk; do
-            mv "$f" "tesla-timestamp-${{ github.run_number }}-${GITHUB_SHA::7}-debug.apk"
+            mv "$f" "tesla-timestamp-${{ github.run_number }}-${GITHUB_SHA::7}.apk"
           done
           ls -la
 
@@ -114,12 +112,12 @@ jobs:
           prerelease: true
           make_latest: false
           body: |
-            由 main 分支自动构建，每次 push 覆盖更新。
+            由 main 分支自动构建并签名，每次 push 覆盖更新。
 
             - 提交：${{ github.sha }}
             - 构建号：${{ github.run_number }}
-            - 版本：1.0.${{ github.run_number }}（versionCode ${{ github.run_number }} + 1）
-            - 安装：下载下方 APK 直接安装（debug 签名）
+            - versionCode：${{ github.run_number }} + 1
+            - 安装：下载下方 APK 直接安装，可覆盖上一版（同一签名密钥）
           files: dist/*.apk
 
   # 打 v* 标签时发布正式 Release
@@ -132,17 +130,17 @@ jobs:
       contents: write
 
     steps:
-      - name: Download debug APK
+      - name: Download release APK
         uses: actions/download-artifact@v4
         with:
-          name: tesla-timestamp-debug-apk
+          name: tesla-timestamp-release-apk
           path: dist
 
       - name: Rename artifact with version tag
         run: |
           cd dist
           for f in *.apk; do
-            mv "$f" "tesla-timestamp-${GITHUB_REF_NAME}-debug.apk"
+            mv "$f" "tesla-timestamp-${GITHUB_REF_NAME}.apk"
           done
           ls -la
 

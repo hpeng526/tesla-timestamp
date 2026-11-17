@@ -23,13 +23,28 @@ android {
         vectorDrawables.useSupportLibrary = true
     }
 
+    // 仓库内固定签名（CI 与本地一致），保证版本之间可以覆盖安装。
+    // 如果改用私有密钥，可用环境变量覆盖：TESLA_KS_PATH / TESLA_KS_PASSWORD / TESLA_KEY_ALIAS / TESLA_KEY_PASSWORD
+    signingConfigs {
+        create("release") {
+            storeFile = file(System.getenv("TESLA_KS_PATH") ?: "../keystore/ci.jks")
+            storePassword = System.getenv("TESLA_KS_PASSWORD") ?: "tesla-timestamp-ci"
+            keyAlias = System.getenv("TESLA_KEY_ALIAS") ?: "teslats"
+            keyPassword = System.getenv("TESLA_KEY_PASSWORD") ?: "tesla-timestamp-ci"
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
+            isShrinkResources = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            signingConfig = signingConfigs.getByName("release")
         }
         debug {
             applicationIdSuffix = ".debug"
+            // debug 也用同一把 key，方便和正式包来回覆盖安装
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 

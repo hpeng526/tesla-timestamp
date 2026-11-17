@@ -92,6 +92,18 @@ app/src/main/java/com/teslacam/timestamp/
 └── usb/UsbInfo.kt               U 盘/可移动存储检测（顶部状态胶囊）
 ```
 
+## 下载与安装
+
+- **稳定版**：仓库 [Releases](https://github.com/hpeng526/tesla-timestamp/releases) 里的 `tesla-timestamp-vX.Y.Z.apk`
+- **最新构建**：Releases 中标记为 Pre-release 的 `latest-build`，每次 push 到 main 自动更新
+
+APK 为 **release 构建**（非 debug）：`applicationId = com.teslacam.timestamp`、`debuggable=false`、
+用仓库内固定密钥 `android/keystore/ci.jks` 签名，因此**可以直接覆盖安装升级**，无需卸载。
+
+> 该密钥随仓库公开（密码 `tesla-timestamp-ci`），仅用于这个开源项目的自建分发包。
+> 若要上架应用商店或使用自己的密钥，可通过环境变量覆盖：
+> `TESLA_KS_PATH` / `TESLA_KS_PASSWORD` / `TESLA_KEY_ALIAS` / `TESLA_KEY_PASSWORD`。
+
 ## 构建与安装
 
 环境：JDK 17+、Android SDK（compileSdk 34）。

@@ -98,11 +98,39 @@ app/src/main/java/com/teslacam/timestamp/
 - **最新构建**：Releases 中标记为 Pre-release 的 `latest-build`，每次 push 到 main 自动更新
 
 APK 为 **release 构建**（非 debug）：`applicationId = com.teslacam.timestamp`、`debuggable=false`、
-用仓库内固定密钥 `android/keystore/ci.jks` 签名，因此**可以直接覆盖安装升级**，无需卸载。
+使用维护者私钥签名，因此**可以直接覆盖安装升级**，无需卸载。签名密钥保存在仓库外，由 CI secrets 注入。
 
-> 该密钥随仓库公开（密码 `tesla-timestamp-ci`），仅用于这个开源项目的自建分发包。
-> 若要上架应用商店或使用自己的密钥，可通过环境变量覆盖：
-> `TESLA_KS_PATH` / `TESLA_KS_PASSWORD` / `TESLA_KEY_ALIAS` / `TESLA_KEY_PASSWORD`。
+## 发布与签名（维护者）
+
+签名密钥**不进仓库**，通过 GitHub Actions Secrets 注入；未配置时 CI 只构建未签名产物并跳过发布。
+
+在仓库 **Settings → Secrets and variables → Actions** 添加：
+
+| Secret | 内容 |
+| --- | --- |
+| `ANDROID_KEYSTORE_BASE64` | keystore 文件的 base64（单行） |
+| `ANDROID_KEYSTORE_PASSWORD` | keystore 密码 |
+| `ANDROID_KEY_ALIAS` | 密钥别名（如 `teslats`） |
+| `ANDROID_KEY_PASSWORD` | 密钥密码（PKCS12 与 keystore 密码相同） |
+
+生成 base64（macOS）：
+
+```bash
+base64 -i ~/tesla-timestamp-keys/release.jks | tr -d '\n' | pbcopy
+```
+
+本地构建签名包时用环境变量：
+
+```bash
+export TESLA_KS_PATH=~/tesla-timestamp-keys/release.jks
+export TESLA_KS_PASSWORD=...
+export TESLA_KEY_ALIAS=teslats
+export TESLA_KEY_PASSWORD=...
+./gradlew :app:assembleRelease
+```
+
+> 为什么不用提交到仓库的密钥：keystore 是应用身份的私钥，公开后任何人都能签出"你的"更新包；
+> 业界做法是放密码管理器 / Secrets / KMS，并配合 Play App Signing（真正的签名密钥由 Google 保管，本地只保留可重置的 upload key）。
 
 ## 构建与安装
 

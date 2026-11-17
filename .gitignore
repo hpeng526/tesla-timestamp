@@ -11,3 +11,8 @@ captures/
 .externalNativeBuild/
 .cxx/
 .kotlin/
+
+# 签名密钥（本地/CI 用环境变量提供，不入库）
+keystore/
+*.jks
+*.keystore

@@ -27,14 +27,23 @@ android {
         vectorDrawables.useSupportLibrary = true
     }
 
-    // 仓库内固定签名（CI 与本地一致），保证版本之间可以覆盖安装。
-    // 如果改用私有密钥，可用环境变量覆盖：TESLA_KS_PATH / TESLA_KS_PASSWORD / TESLA_KEY_ALIAS / TESLA_KEY_PASSWORD
+    // 签名密钥不进仓库：通过环境变量提供（CI 里由 GitHub Actions secrets 注入）。
+    //   TESLA_KS_PATH        keystore 文件路径
+    //   TESLA_KS_PASSWORD    keystore 密码
+    //   TESLA_KEY_ALIAS      密钥别名
+    //   TESLA_KEY_PASSWORD   密钥密码
+    // 未提供时 release 保持未签名（CI 会跳过发布），本地仍可构建 debug 包。
+    val signingKeystore = System.getenv("TESLA_KS_PATH")
+        ?.let { file(it) }
+        ?.takeIf { it.exists() }
     signingConfigs {
-        create("release") {
-            storeFile = file(System.getenv("TESLA_KS_PATH") ?: "../keystore/ci.jks")
-            storePassword = System.getenv("TESLA_KS_PASSWORD") ?: "tesla-timestamp-ci"
-            keyAlias = System.getenv("TESLA_KEY_ALIAS") ?: "teslats"
-            keyPassword = System.getenv("TESLA_KEY_PASSWORD") ?: "tesla-timestamp-ci"
+        if (signingKeystore != null) {
+            create("release") {
+                storeFile = signingKeystore
+                storePassword = System.getenv("TESLA_KS_PASSWORD")
+                keyAlias = System.getenv("TESLA_KEY_ALIAS")
+                keyPassword = System.getenv("TESLA_KEY_PASSWORD")
+            }
         }
     }
 
@@ -43,12 +52,12 @@ android {
             isMinifyEnabled = false
             isShrinkResources = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            signingConfig = signingConfigs.getByName("release")
+            if (signingKeystore != null) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
         debug {
             applicationIdSuffix = ".debug"
-            // debug 也用同一把 key，方便和正式包来回覆盖安装
-            signingConfig = signingConfigs.getByName("release")
         }
     }
 

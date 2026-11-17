@@ -23,6 +23,12 @@ jobs:
   build:
     name: Build & Test
     runs-on: ubuntu-latest
+    # secrets 不能出现在 if 里，先落到 env，再用 env 判断是否已配置签名密钥
+    env:
+      ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+      ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+      ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
 
     steps:
       - name: Checkout
@@ -35,27 +41,22 @@ jobs:
           java-version: '17'
 
       - name: Decode signing keystore
-        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
-        env:
-          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
-          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        if: env.ANDROID_KEYSTORE_BASE64 != ''
         run: |
           set -euo pipefail
-          KS="${RUNNER_TEMP}/release.jks"
-          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$KS"
+          KS="\${RUNNER_TEMP}/release.jks"
+          printf '%s' "\$ANDROID_KEYSTORE_BASE64" | base64 --decode > "\$KS"
           {
-            echo "TESLA_KS_PATH=$KS"
-            echo "TESLA_KS_PASSWORD=$KEYSTORE_PASSWORD"
-            echo "TESLA_KEY_ALIAS=$KEY_ALIAS"
-            echo "TESLA_KEY_PASSWORD=$KEY_PASSWORD"
-          } >> "$GITHUB_ENV"
+            echo "TESLA_KS_PATH=\$KS"
+            echo "TESLA_KS_PASSWORD=\$ANDROID_KEYSTORE_PASSWORD"
+            echo "TESLA_KEY_ALIAS=\$ANDROID_KEY_ALIAS"
+            echo "TESLA_KEY_PASSWORD=\$ANDROID_KEY_PASSWORD"
+          } >> "\$GITHUB_ENV"
           echo "签名密钥已从 secrets 载入"
 
       - name: Warn when signing key is missing
-        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 == '' }}
-        run: echo "::warning::未配置 ANDROID_KEYSTORE_BASE64 等 secrets，本次不会发布 Release（只构建未签名产物）"
+        if: env.ANDROID_KEYSTORE_BASE64 == ''
+        run: echo "::warning::未配置 ANDROID_KEYSTORE_BASE64 等 secrets，本次只构建未签名产物、不发布 Release"
 
       - name: Set up Gradle (with cache)
         uses: gradle/actions/setup-gradle@v4
@@ -72,12 +73,12 @@ jobs:
         run: ./gradlew :app:assembleRelease :app:assembleDebug --no-daemon --console=plain
 
       - name: Verify release signature
-        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+        if: env.ANDROID_KEYSTORE_BASE64 != ''
         working-directory: android
         run: |
           APK=app/build/outputs/apk/release/app-release.apk
-          ${ANDROID_HOME}/build-tools/34.0.0/apksigner verify --print-certs "$APK"
-          ${ANDROID_HOME}/build-tools/34.0.0/aapt2 dump badging "$APK" | head -1
+          "\${ANDROID_HOME}/build-tools/34.0.0/apksigner" verify --print-certs "\$APK"
+          "\${ANDROID_HOME}/build-tools/34.0.0/aapt2" dump badging "\$APK" | head -1
 
       - name: Upload unit test report
         if: always()
@@ -104,34 +105,44 @@ jobs:
   # 每次 push 到 main 自动更新滚动 Release（tag: latest-build），无需手动打 tag
   rolling-release:
     name: Publish rolling release (main)
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && secrets.ANDROID_KEYSTORE_BASE64 != ''
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    env:
+      ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
 
     steps:
+      - name: Skip when signing key is missing
+        if: env.ANDROID_KEYSTORE_BASE64 == ''
+        run: echo "::warning::未配置签名密钥，跳过发布"
+
       - name: Download release APK
+        if: env.ANDROID_KEYSTORE_BASE64 != ''
         uses: actions/download-artifact@v4
         with:
           name: tesla-timestamp-release-apk
           path: dist
 
       - name: Rename APK with version and commit
+        if: env.ANDROID_KEYSTORE_BASE64 != ''
         run: |
           cd dist
           for f in *.apk; do
-            mv "$f" "tesla-timestamp-${{ github.run_number }}-${GITHUB_SHA::7}.apk"
+            mv "\$f" "tesla-timestamp-${{ github.run_number }}-${GITHUB_SHA::7}.apk"
           done
           ls -la
 
       - name: Remove previous rolling release
+        if: env.ANDROID_KEYSTORE_BASE64 != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
         run: gh release delete latest-build --yes --cleanup-tag || true
 
       - name: Publish rolling release
+        if: env.ANDROID_KEYSTORE_BASE64 != ''
         uses: softprops/action-gh-release@v2
         with:
           tag_name: latest-build
@@ -150,34 +161,44 @@ jobs:
   # 打 v* 标签时发布正式 Release
   release:
     name: Publish versioned release
-    if: startsWith(github.ref, 'refs/tags/v') && secrets.ANDROID_KEYSTORE_BASE64 != ''
+    if: startsWith(github.ref, 'refs/tags/v')
     needs: build
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    env:
+      ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
 
     steps:
+      - name: Skip when signing key is missing
+        if: env.ANDROID_KEYSTORE_BASE64 == ''
+        run: echo "::warning::未配置签名密钥，跳过发布"
+
       - name: Download release APK
+        if: env.ANDROID_KEYSTORE_BASE64 != ''
         uses: actions/download-artifact@v4
         with:
           name: tesla-timestamp-release-apk
           path: dist
 
       - name: Rename artifact with version tag
+        if: env.ANDROID_KEYSTORE_BASE64 != ''
         run: |
           cd dist
           for f in *.apk; do
-            mv "$f" "tesla-timestamp-${GITHUB_REF_NAME}.apk"
+            mv "\$f" "tesla-timestamp-${GITHUB_REF_NAME}.apk"
           done
           ls -la
 
       - name: Remove previous release for this tag
+        if: env.ANDROID_KEYSTORE_BASE64 != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
-        run: gh release delete "${GITHUB_REF_NAME}" --yes || true
+        run: gh release delete "\${GITHUB_REF_NAME}" --yes || true
 
       - name: Publish release
+        if: env.ANDROID_KEYSTORE_BASE64 != ''
         uses: softprops/action-gh-release@v2
         with:
           files: dist/*.apk

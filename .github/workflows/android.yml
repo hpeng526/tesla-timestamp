@@ -144,15 +144,11 @@ jobs:
           done
           ls -la
 
-      - name: Remove stale assets from this release
+      - name: Remove previous release for this tag
         env:
-          GH_TOKEN: ${GITHUB_TOKEN}
-          GH_REPO: ${GITHUB_REPOSITORY}
-        run: |
-          gh release view "${GITHUB_REF_NAME}" --json assets --jq '.assets[].name' 2>/dev/null | \
-            while read -r name; do
-              [ -n "${name}" ] && gh release delete-asset "${GITHUB_REF_NAME}" "${name}" --yes || true
-            done
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: gh release delete "${GITHUB_REF_NAME}" --yes || true
 
       - name: Publish release
         uses: softprops/action-gh-release@v2

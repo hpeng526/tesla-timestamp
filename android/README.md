@@ -95,7 +95,7 @@ app/src/main/java/com/teslacam/timestamp/
 ## 下载与安装
 
 - **稳定版**：仓库 [Releases](https://github.com/hpeng526/tesla-timestamp/releases) 里的 `tesla-timestamp-vX.Y.Z.apk`
-- **最新构建**：Releases 中标记为 Pre-release 的 `latest-build`，每次 push 到 main 自动更新
+- 发布方式：**只有打 `v*` 标签才会构建并发布**（push 到 main 不构建）；也可以手动触发 workflow
 
 APK 为 **release 构建**（非 debug）：`applicationId = com.teslacam.timestamp`、`debuggable=false`、
 使用维护者私钥签名，因此**可以直接覆盖安装升级**，无需卸载。签名密钥保存在仓库外，由 CI secrets 注入。

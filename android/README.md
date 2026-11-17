@@ -95,7 +95,24 @@ app/src/main/java/com/teslacam/timestamp/
 ## 下载与安装
 
 - **稳定版**：仓库 [Releases](https://github.com/hpeng526/tesla-timestamp/releases) 里的 `tesla-timestamp-vX.Y.Z.apk`
-- 发布方式：**只有打 `v*` 标签才会构建并发布**（push 到 main 不构建）；也可以手动触发 workflow
+- 发布方式：**只有打 `v*` 标签才会构建并发布**（push 到 main 不构建）
+
+### 怎么发一个新版本
+
+**方式一：网页一键发布（推荐）**
+
+仓库 → `Actions` → 左侧 `Android CI` → 右上 **Run workflow** → 填版本号（如 `1.0.1`）→ Run。
+流程会自动：打 `v1.0.1` 标签 → 构建并签名 → 创建 Release 并附上 APK。
+（勾选 `prerelease` 可发布为预发布版本）
+
+**方式二：本地打标签**
+
+```bash
+git tag -a v1.0.1 -m "Release v1.0.1" && git push origin v1.0.1
+```
+
+> 说明：GitHub 的 `GITHUB_TOKEN` 推的标签**不会**再触发另一个 workflow（防递归），
+> 所以手动发布是「打标签 + 构建 + 发布」在同一个 run 里完成，不依赖标签事件。
 
 APK 为 **release 构建**（非 debug）：`applicationId = com.teslacam.timestamp`、`debuggable=false`、
 使用维护者私钥签名，因此**可以直接覆盖安装升级**，无需卸载。签名密钥保存在仓库外，由 CI secrets 注入。

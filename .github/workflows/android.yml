@@ -44,14 +44,14 @@ jobs:
         if: env.ANDROID_KEYSTORE_BASE64 != ''
         run: |
           set -euo pipefail
-          KS="\${RUNNER_TEMP}/release.jks"
-          printf '%s' "\$ANDROID_KEYSTORE_BASE64" | base64 --decode > "\$KS"
+          KS="${RUNNER_TEMP}/release.jks"
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$KS"
           {
-            echo "TESLA_KS_PATH=\$KS"
-            echo "TESLA_KS_PASSWORD=\$ANDROID_KEYSTORE_PASSWORD"
-            echo "TESLA_KEY_ALIAS=\$ANDROID_KEY_ALIAS"
-            echo "TESLA_KEY_PASSWORD=\$ANDROID_KEY_PASSWORD"
-          } >> "\$GITHUB_ENV"
+            echo "TESLA_KS_PATH=$KS"
+            echo "TESLA_KS_PASSWORD=$ANDROID_KEYSTORE_PASSWORD"
+            echo "TESLA_KEY_ALIAS=$ANDROID_KEY_ALIAS"
+            echo "TESLA_KEY_PASSWORD=$ANDROID_KEY_PASSWORD"
+          } >> "$GITHUB_ENV"
           echo "签名密钥已从 secrets 载入"
 
       - name: Warn when signing key is missing
@@ -77,8 +77,10 @@ jobs:
         working-directory: android
         run: |
           APK=app/build/outputs/apk/release/app-release.apk
-          "\${ANDROID_HOME}/build-tools/34.0.0/apksigner" verify --print-certs "\$APK"
-          "\${ANDROID_HOME}/build-tools/34.0.0/aapt2" dump badging "\$APK" | head -1
+          BT="$(ls -d "${ANDROID_HOME}"/build-tools/* | sort -V | tail -1)"
+          echo "build-tools: $BT"
+          "$BT/apksigner" verify --print-certs "$APK"
+          "$BT/aapt2" dump badging "$APK" | head -1
 
       - name: Upload unit test report
         if: always()
@@ -130,7 +132,7 @@ jobs:
         run: |
           cd dist
           for f in *.apk; do
-            mv "\$f" "tesla-timestamp-${{ github.run_number }}-${GITHUB_SHA::7}.apk"
+            mv "$f" "tesla-timestamp-${{ github.run_number }}-${GITHUB_SHA::7}.apk"
           done
           ls -la
 
@@ -186,7 +188,7 @@ jobs:
         run: |
           cd dist
           for f in *.apk; do
-            mv "\$f" "tesla-timestamp-${GITHUB_REF_NAME}.apk"
+            mv "$f" "tesla-timestamp-${GITHUB_REF_NAME}.apk"
           done
           ls -la
 
@@ -195,7 +197,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
-        run: gh release delete "\${GITHUB_REF_NAME}" --yes || true
+        run: gh release delete "${GITHUB_REF_NAME}" --yes || true
 
       - name: Publish release
         if: env.ANDROID_KEYSTORE_BASE64 != ''

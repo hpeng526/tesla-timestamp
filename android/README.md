@@ -1,5 +1,7 @@
 # Tesla 时间戳（Android）
 
+[![Android CI](https://github.com/hpeng526/tesla-timestamp/actions/workflows/android.yml/badge.svg)](https://github.com/hpeng526/tesla-timestamp/actions/workflows/android.yml)
+
 把特斯拉行车记录仪（TeslaCam）U 盘里的视频读出来，**在手机上逐帧把时间戳烧录进画面**，再导出到手机相册。
 
 本项目是仓库根目录两个桌面脚本（`add_timestamp.sh` / `add_timestamp.ps1`）的 Android 重制版：

@@ -1,5 +1,7 @@
 # tesla-timestamp
 
+[![Android CI](https://github.com/hpeng526/tesla-timestamp/actions/workflows/android.yml/badge.svg)](https://github.com/hpeng526/tesla-timestamp/actions/workflows/android.yml)
+
 给特斯拉行车记录仪（TeslaCam）视频叠加时间戳的小工具集合。
 
 | 目录 | 说明 |

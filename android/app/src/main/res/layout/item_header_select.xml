@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="20dp"
+    android:paddingTop="10dp"
+    android:paddingEnd="12dp">
+
+    <TextView
+        android:id="@+id/tvSelectionSummary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textAppearance="@style/Text.Tesla.Caption"
+        android:textColor="@color/on_surface_variant" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSelectAll"
+        style="@style/Widget.TeslaCam.Button.Text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="0dp"
+        android:text="@string/action_select_all" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnClearSelection"
+        style="@style/Widget.TeslaCam.Button.Text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="0dp"
+        android:text="@string/action_clear" />
+</LinearLayout>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="brand_red">#E82127</color>
+    <color name="brand_red_dark">#B3161B</color>
+    <color name="on_brand">#FFFFFF</color>
+    <color name="brand_container">#3A1417</color>
+    <color name="on_brand_container">#FFD9DA</color>
+
+    <color name="bg">#0D1015</color>
+    <color name="surface">#151A21</color>
+    <color name="surface_variant">#1D242D</color>
+    <color name="on_surface">#ECEFF3</color>
+    <color name="on_surface_variant">#9AA4B0</color>
+    <color name="outline">#2A323C</color>
+    <color name="outline_strong">#3A434F</color>
+
+    <color name="success">#4CC26A</color>
+    <color name="success_container">#15311D</color>
+    <color name="warning">#E0A64B</color>
+    <color name="danger">#FF6B6B</color>
+
+    <color name="thumbnail_placeholder">#232A33</color>
+    <color name="tesla_dark">#05070A</color>
+    <color name="scrim">#99000000</color>
+</resources>

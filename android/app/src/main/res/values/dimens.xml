@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 8pt spacing grid -->
+    <dimen name="space_xs">4dp</dimen>
+    <dimen name="space_s">8dp</dimen>
+    <dimen name="space_m">12dp</dimen>
+    <dimen name="space_l">16dp</dimen>
+    <dimen name="space_xl">24dp</dimen>
+    <dimen name="space_2xl">32dp</dimen>
+
+    <dimen name="radius_card">20dp</dimen>
+    <dimen name="radius_chip">100dp</dimen>
+    <dimen name="sheet_peek">320dp</dimen>
+    <dimen name="thumbnail_width">104dp</dimen>
+    <dimen name="thumbnail_height">64dp</dimen>
+</resources>

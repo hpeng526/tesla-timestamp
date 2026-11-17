@@ -8,7 +8,9 @@ import java.util.Locale
 /** Small formatting helpers shared by the UI and the overlay renderer. */
 object TimeFormats {
 
-    private val DATE_TIME: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+    // Locale.US keeps the digits / pattern identical on every device and on CI (e.g. LANG=C).
+    private val DATE_TIME: DateTimeFormatter =
+        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.US)
 
     fun dateTime(epochMillis: Long, zone: ZoneId = ZoneId.systemDefault()): String =
         DATE_TIME.format(Instant.ofEpochMilli(epochMillis).atZone(zone))

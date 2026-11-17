@@ -14,15 +14,23 @@ class OverlayStyleTest {
 
     private val epoch = Instant.parse("2024-05-01T04:30:05Z").toEpochMilli()
 
+    // The zone is passed explicitly so the assertions do not depend on the machine / CI time zone.
+    private val zone: ZoneId = ZoneId.of("Asia/Shanghai")
+
     @Test
     fun formatsFullTimestamp() {
-        assertEquals("2024-05-01 12:30:05", OverlayText.timeLine(epoch))
+        assertEquals("2024-05-01 12:30:05", OverlayText.timeLine(epoch, zone))
     }
 
     @Test
     fun clockOnlyWhenDateIsHidden() {
         val style = OverlayStyle(showDate = false)
-        assertEquals("12:30:05", OverlayText.firstLine(epoch, style))
+        assertEquals("12:30:05", OverlayText.firstLine(epoch, style, zone))
+    }
+
+    @Test
+    fun utcZoneFormatsDifferently() {
+        assertEquals("2024-05-01 04:30:05", OverlayText.timeLine(epoch, ZoneId.of("UTC")))
     }
 
     @Test

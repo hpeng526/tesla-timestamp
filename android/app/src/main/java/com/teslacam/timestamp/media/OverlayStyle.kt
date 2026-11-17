@@ -2,6 +2,7 @@ package com.teslacam.timestamp.media
 
 import com.teslacam.timestamp.data.TeslaEventInfo
 import com.teslacam.timestamp.data.TimeFormats
+import java.time.ZoneId
 
 enum class OverlayPosition(val label: String) {
     TOP_LEFT("左上"),
@@ -34,10 +35,18 @@ data class OverlayStyle(
 /** Formats the overlay lines for a given frame wall clock time. */
 object OverlayText {
 
-    fun timeLine(epochMillis: Long): String = TimeFormats.dateTime(epochMillis)
+    fun timeLine(epochMillis: Long, zone: ZoneId = ZoneId.systemDefault()): String =
+        TimeFormats.dateTime(epochMillis, zone)
 
-    fun firstLine(epochMillis: Long, style: OverlayStyle): String =
-        if (style.showDate) TimeFormats.dateTime(epochMillis) else TimeFormats.clock(epochMillis)
+    fun firstLine(
+        epochMillis: Long,
+        style: OverlayStyle,
+        zone: ZoneId = ZoneId.systemDefault()
+    ): String = if (style.showDate) {
+        TimeFormats.dateTime(epochMillis, zone)
+    } else {
+        TimeFormats.clock(epochMillis, zone)
+    }
 
     /**
      * Optional second line with camera / event metadata, similar to the location line the reference

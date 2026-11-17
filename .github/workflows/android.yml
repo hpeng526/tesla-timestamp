@@ -15,6 +15,10 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  # 递增构建号 -> versionCode = 1 + BUILD_NUMBER，保证可覆盖安装
+  BUILD_NUMBER: ${{ github.run_number }}
+
 jobs:
   build:
     name: Build & Test
@@ -41,6 +45,14 @@ jobs:
         working-directory: android
         run: ./gradlew :app:assembleDebug :app:assembleRelease --no-daemon --console=plain
 
+      - name: Read version
+        id: version
+        working-directory: android
+        run: |
+          VERSION=$(grep -oP 'versionName\s*=\s*"\K[^"]+' app/build.gradle.kts || echo "1.0.0")
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "versionName=$VERSION (versionCode=$((1 + BUILD_NUMBER)))"
+
       - name: Upload unit test report
         if: always()
         uses: actions/upload-artifact@v4
@@ -63,8 +75,56 @@ jobs:
           path: android/app/build/outputs/apk/release/*.apk
           if-no-files-found: warn
 
+  # 每次 push 到 main 自动发布一个「最新构建」滚动 Release（tag: latest-build），
+  # 不需要手动打 tag，手机上直接下载安装。
+  rolling-release:
+    name: Publish rolling release (main)
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download debug APK
+        uses: actions/download-artifact@v4
+        with:
+          name: tesla-timestamp-debug-apk
+          path: dist
+
+      - name: Rename APK with version and commit
+        run: |
+          cd dist
+          for f in *.apk; do
+            mv "$f" "tesla-timestamp-${{ github.run_number }}-${GITHUB_SHA::7}-debug.apk"
+          done
+          ls -la
+
+      - name: Remove previous rolling release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: gh release delete latest-build --yes --cleanup-tag || true
+
+      - name: Publish rolling release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest-build
+          name: 最新构建（main）
+          prerelease: true
+          make_latest: false
+          body: |
+            由 main 分支自动构建，每次 push 覆盖更新。
+
+            - 提交：${{ github.sha }}
+            - 构建号：${{ github.run_number }}
+            - 版本：1.0.${{ github.run_number }}（versionCode ${{ github.run_number }} + 1）
+            - 安装：下载下方 APK 直接安装（debug 签名）
+          files: dist/*.apk
+
+  # 打 v* 标签时发布正式 Release
   release:
-    name: Attach APK to GitHub Release
+    name: Publish versioned release
     if: startsWith(github.ref, 'refs/tags/v')
     needs: build
     runs-on: ubuntu-latest

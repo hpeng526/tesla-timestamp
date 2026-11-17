@@ -3,6 +3,12 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
+// CI 通过 BUILD_NUMBER 注入递增的构建号，本地构建时回退到 0。
+// versionCode 必须递增，否则手机上覆盖安装会失败。
+val buildNumber: Int = (System.getenv("BUILD_NUMBER") ?: "0").toIntOrNull() ?: 0
+val appVersionCode: Int = 1 + buildNumber
+val appVersionName: String = if (buildNumber == 0) "1.0.0" else "1.0.$buildNumber"
+
 android {
     namespace = "com.teslacam.timestamp"
     compileSdk = 34
@@ -11,8 +17,8 @@ android {
         applicationId = "com.teslacam.timestamp"
         minSdk = 26
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = appVersionCode
+        versionName = appVersionName
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }

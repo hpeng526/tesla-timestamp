@@ -16,3 +16,15 @@ captures/
 keystore/
 *.jks
 *.keystore
+
+# iOS / Xcode / SwiftPM
+.build/
+.swiftpm/
+DerivedData/
+xcuserdata/
+*.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+*.ipa
+*.dSYM.zip
+*.dSYM

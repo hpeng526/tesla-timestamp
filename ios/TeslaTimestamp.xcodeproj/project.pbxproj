@@ -1,0 +1,530 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		04C46F8B8CCF12836E2E1E27 /* TeslaTimestampApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0C1D08515E685F6C4478282 /* TeslaTimestampApp.swift */; };
+		04E5C801BA4130ABC6416B24 /* VideoPlayerSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1AAFED51CE05A2CB7A5E449 /* VideoPlayerSheetView.swift */; };
+		05152E0064832D60D2995652 /* PreviewSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2A44B599D33E685200451C /* PreviewSheetView.swift */; };
+		0616325308B7BBE1BEE1C1E6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1ABDED51C2BEC029D9DDFA3 /* Assets.xcassets */; };
+		0B154C7311C1B33771DAD557 /* TeslaCamScannerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B843DA0DD7B2A0430035ACFD /* TeslaCamScannerTests.swift */; };
+		15788A18CAD9F125C6C0A921 /* ClipCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92FCD18451595E306A283CE1 /* ClipCardView.swift */; };
+		17925F132CD4DD36AD47D415 /* EventJson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732D383C12353A05C3F1ECB9 /* EventJson.swift */; };
+		188FE9EA6B01A675D499CB77 /* ClipPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59840AE5B1F5192C26E81F62 /* ClipPath.swift */; };
+		1F02EF56D8BFBB0AA152738E /* TeslaNaming.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25DC35B5998EF12B5A6964B9 /* TeslaNaming.swift */; };
+		2583CE0E432106DDBF590DD7 /* TeslaCamScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4CBABC77E57A4983DD73607 /* TeslaCamScanner.swift */; };
+		294ED5CF703F12E2F774419D /* EventJsonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 313AED8916592772866DDBA6 /* EventJsonTests.swift */; };
+		2B507F04BFDE3D22BA2290A2 /* ResultsSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77DB7D2B669634B2D4222E6E /* ResultsSheetView.swift */; };
+		329B18BC57189C3763E45B2F /* TimestampTranscoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5044216531EC0052FEC1E3 /* TimestampTranscoderTests.swift */; };
+		388209F6C986BEEF70EB0150 /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDB381A88665B17BB32460FD /* MainViewModel.swift */; };
+		3C4419A89C7E9FAB722E9C9A /* ThumbnailLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A8881F0EC9F853AD59699C7 /* ThumbnailLoader.swift */; };
+		4B85AF772C4AFC38E6982C8D /* PreviewComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B044720CE3F9CECB4ECB7E60 /* PreviewComposer.swift */; };
+		506FE2E9262FFD76ADD91551 /* PhotoLibraryExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 149BEABC6575EAD0335BC84A /* PhotoLibraryExporter.swift */; };
+		5151213B724986739E53001E /* DesignTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 314666E7B554F14696BE4543 /* DesignTokens.swift */; };
+		52A41311BD49C99365176C44 /* ClipModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = D96972A855A5EE7DD3E5F427 /* ClipModels.swift */; };
+		640EEF669969E04D4C04BD42 /* DocumentPickers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C1E86167AC88CD6439BF4A0 /* DocumentPickers.swift */; };
+		6B1A06A850169B06AC694FDB /* OverlayBitmapFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21A5CEFF113E3C3C3667019 /* OverlayBitmapFactory.swift */; };
+		6B1D34869761C732F5B1D1FD /* OverlayStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27281B10A93A4F6450235E03 /* OverlayStyle.swift */; };
+		6B83AF5FE7D72364C990B53D /* TimeFormats.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8EBCC1FFDCB7F0044CFC02B /* TimeFormats.swift */; };
+		6F88F885FA6E96F2396569C7 /* UsbVolumeMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7892D91D61D6537BADC24E0 /* UsbVolumeMonitor.swift */; };
+		AAC5A59FC94EB42215E84586 /* MediaSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6680D17FDD8D7A2D99D9B17E /* MediaSource.swift */; };
+		C115164F61C8D68A1942E1D7 /* ClipPathParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F689652906E0CC10BB61D574 /* ClipPathParserTests.swift */; };
+		CC0E9D88AC8EE47C5392552F /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B74F7D1C72E16D7A04B567A0 /* MainView.swift */; };
+		D7C50FEDB97284B8A11553DE /* OverlayStyleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 487FBD7EF00444181245130B /* OverlayStyleTests.swift */; };
+		DB858C2389C64835E64F7C7F /* TimestampVideoProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D630BFAB50FEEABBAE7432D /* TimestampVideoProcessor.swift */; };
+		E3F8747BC224DD6ACCC6C527 /* HeaderCardsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844CA9FE3FDE7F5E126DB907 /* HeaderCardsView.swift */; };
+		F03520695E52C8E37F191579 /* TeslaNamingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 678425E402D723DC0A789422 /* TeslaNamingTests.swift */; };
+		F4C3E9E772458D47371FAECA /* TimestampTranscoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0D05B5A7F1B5B2B8D312F95 /* TimestampTranscoder.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		E70CB3E06A6E72407B296985 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9E88446A3F44B57E975BE17B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CC6F95109BBF0F8EA776EC0A;
+			remoteInfo = TeslaTimestamp;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		0A2A44B599D33E685200451C /* PreviewSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PreviewSheetView.swift; path = TeslaTimestamp/UI/Sheets/PreviewSheetView.swift; sourceTree = "<group>"; };
+		0C5044216531EC0052FEC1E3 /* TimestampTranscoderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TimestampTranscoderTests.swift; path = TeslaTimestampTests/TimestampTranscoderTests.swift; sourceTree = "<group>"; };
+		149BEABC6575EAD0335BC84A /* PhotoLibraryExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PhotoLibraryExporter.swift; path = TeslaTimestamp/Export/PhotoLibraryExporter.swift; sourceTree = "<group>"; };
+		25DC35B5998EF12B5A6964B9 /* TeslaNaming.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TeslaNaming.swift; path = TeslaTimestamp/Core/Data/TeslaNaming.swift; sourceTree = "<group>"; };
+		27281B10A93A4F6450235E03 /* OverlayStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = OverlayStyle.swift; path = TeslaTimestamp/Core/Media/OverlayStyle.swift; sourceTree = "<group>"; };
+		2C1E86167AC88CD6439BF4A0 /* DocumentPickers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DocumentPickers.swift; path = TeslaTimestamp/UI/DocumentPickers.swift; sourceTree = "<group>"; };
+		2EE0D0A9B97E955EFDF7CE35 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = TeslaTimestamp/App/Info.plist; sourceTree = "<group>"; };
+		313AED8916592772866DDBA6 /* EventJsonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EventJsonTests.swift; path = TeslaTimestampTests/EventJsonTests.swift; sourceTree = "<group>"; };
+		314666E7B554F14696BE4543 /* DesignTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DesignTokens.swift; path = TeslaTimestamp/UI/DesignTokens.swift; sourceTree = "<group>"; };
+		487FBD7EF00444181245130B /* OverlayStyleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = OverlayStyleTests.swift; path = TeslaTimestampTests/OverlayStyleTests.swift; sourceTree = "<group>"; };
+		59840AE5B1F5192C26E81F62 /* ClipPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ClipPath.swift; path = TeslaTimestamp/Core/Data/ClipPath.swift; sourceTree = "<group>"; };
+		6680D17FDD8D7A2D99D9B17E /* MediaSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MediaSource.swift; path = TeslaTimestamp/Core/Data/MediaSource.swift; sourceTree = "<group>"; };
+		678425E402D723DC0A789422 /* TeslaNamingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TeslaNamingTests.swift; path = TeslaTimestampTests/TeslaNamingTests.swift; sourceTree = "<group>"; };
+		6D630BFAB50FEEABBAE7432D /* TimestampVideoProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TimestampVideoProcessor.swift; path = TeslaTimestamp/Core/Media/TimestampVideoProcessor.swift; sourceTree = "<group>"; };
+		732D383C12353A05C3F1ECB9 /* EventJson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EventJson.swift; path = TeslaTimestamp/Core/Data/EventJson.swift; sourceTree = "<group>"; };
+		77DB7D2B669634B2D4222E6E /* ResultsSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ResultsSheetView.swift; path = TeslaTimestamp/UI/Sheets/ResultsSheetView.swift; sourceTree = "<group>"; };
+		7A8881F0EC9F853AD59699C7 /* ThumbnailLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ThumbnailLoader.swift; path = TeslaTimestamp/UI/ThumbnailLoader.swift; sourceTree = "<group>"; };
+		844CA9FE3FDE7F5E126DB907 /* HeaderCardsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HeaderCardsView.swift; path = TeslaTimestamp/UI/HeaderCardsView.swift; sourceTree = "<group>"; };
+		92FCD18451595E306A283CE1 /* ClipCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ClipCardView.swift; path = TeslaTimestamp/UI/ClipCardView.swift; sourceTree = "<group>"; };
+		A1ABDED51C2BEC029D9DDFA3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = TeslaTimestamp/Resources/Assets.xcassets; sourceTree = "<group>"; };
+		A4CBABC77E57A4983DD73607 /* TeslaCamScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TeslaCamScanner.swift; path = TeslaTimestamp/Core/Data/TeslaCamScanner.swift; sourceTree = "<group>"; };
+		A8EBCC1FFDCB7F0044CFC02B /* TimeFormats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TimeFormats.swift; path = TeslaTimestamp/Core/Data/TimeFormats.swift; sourceTree = "<group>"; };
+		AB6517ED06B9D72324AB39C9 /* TeslaTimestamp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TeslaTimestamp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B044720CE3F9CECB4ECB7E60 /* PreviewComposer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PreviewComposer.swift; path = TeslaTimestamp/Core/Media/PreviewComposer.swift; sourceTree = "<group>"; };
+		B1AAFED51CE05A2CB7A5E449 /* VideoPlayerSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = VideoPlayerSheetView.swift; path = TeslaTimestamp/UI/Sheets/VideoPlayerSheetView.swift; sourceTree = "<group>"; };
+		B74F7D1C72E16D7A04B567A0 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MainView.swift; path = TeslaTimestamp/UI/MainView.swift; sourceTree = "<group>"; };
+		B843DA0DD7B2A0430035ACFD /* TeslaCamScannerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TeslaCamScannerTests.swift; path = TeslaTimestampTests/TeslaCamScannerTests.swift; sourceTree = "<group>"; };
+		BDB381A88665B17BB32460FD /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MainViewModel.swift; path = TeslaTimestamp/UI/MainViewModel.swift; sourceTree = "<group>"; };
+		C0C1D08515E685F6C4478282 /* TeslaTimestampApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TeslaTimestampApp.swift; path = TeslaTimestamp/App/TeslaTimestampApp.swift; sourceTree = "<group>"; };
+		C21A5CEFF113E3C3C3667019 /* OverlayBitmapFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = OverlayBitmapFactory.swift; path = TeslaTimestamp/Core/Media/OverlayBitmapFactory.swift; sourceTree = "<group>"; };
+		C4E1EFB66B7068B281D9D2FE /* TeslaTimestampTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TeslaTimestampTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C7892D91D61D6537BADC24E0 /* UsbVolumeMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UsbVolumeMonitor.swift; path = TeslaTimestamp/USB/UsbVolumeMonitor.swift; sourceTree = "<group>"; };
+		D96972A855A5EE7DD3E5F427 /* ClipModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ClipModels.swift; path = TeslaTimestamp/Core/Data/ClipModels.swift; sourceTree = "<group>"; };
+		E0D05B5A7F1B5B2B8D312F95 /* TimestampTranscoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TimestampTranscoder.swift; path = TeslaTimestamp/Core/Media/TimestampTranscoder.swift; sourceTree = "<group>"; };
+		F689652906E0CC10BB61D574 /* ClipPathParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ClipPathParserTests.swift; path = TeslaTimestampTests/ClipPathParserTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		0B8DA9AA4AA8CA652E3473FA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1B6FBB1D95CDF0E47E3BC288 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1E78B559816E575FC0BDB29C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AB6517ED06B9D72324AB39C9 /* TeslaTimestamp.app */,
+				C4E1EFB66B7068B281D9D2FE /* TeslaTimestampTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2EB2D8158FC6EF9EB19CB439 = {
+			isa = PBXGroup;
+			children = (
+				F2447827BB879C082ADBC518 /* TeslaTimestamp */,
+				788492B1BB25053FB57A79AB /* TeslaTimestampTests */,
+				1E78B559816E575FC0BDB29C /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		3D9FD67626A67C9203603F79 /* Core/Data */ = {
+			isa = PBXGroup;
+			children = (
+				25DC35B5998EF12B5A6964B9 /* TeslaNaming.swift */,
+				D96972A855A5EE7DD3E5F427 /* ClipModels.swift */,
+				59840AE5B1F5192C26E81F62 /* ClipPath.swift */,
+				732D383C12353A05C3F1ECB9 /* EventJson.swift */,
+				A8EBCC1FFDCB7F0044CFC02B /* TimeFormats.swift */,
+				6680D17FDD8D7A2D99D9B17E /* MediaSource.swift */,
+				A4CBABC77E57A4983DD73607 /* TeslaCamScanner.swift */,
+			);
+			name = Core/Data;
+			sourceTree = "<group>";
+		};
+		65D0C7A4240F7D6DC53926AC /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				314666E7B554F14696BE4543 /* DesignTokens.swift */,
+				7A8881F0EC9F853AD59699C7 /* ThumbnailLoader.swift */,
+				BDB381A88665B17BB32460FD /* MainViewModel.swift */,
+				2C1E86167AC88CD6439BF4A0 /* DocumentPickers.swift */,
+				844CA9FE3FDE7F5E126DB907 /* HeaderCardsView.swift */,
+				92FCD18451595E306A283CE1 /* ClipCardView.swift */,
+				B74F7D1C72E16D7A04B567A0 /* MainView.swift */,
+			);
+			name = UI;
+			sourceTree = "<group>";
+		};
+		6665143C17F220C0EF893887 /* Export */ = {
+			isa = PBXGroup;
+			children = (
+				149BEABC6575EAD0335BC84A /* PhotoLibraryExporter.swift */,
+			);
+			name = Export;
+			sourceTree = "<group>";
+		};
+		6A721B77B898461B2EBA6217 /* USB */ = {
+			isa = PBXGroup;
+			children = (
+				C7892D91D61D6537BADC24E0 /* UsbVolumeMonitor.swift */,
+			);
+			name = USB;
+			sourceTree = "<group>";
+		};
+		788492B1BB25053FB57A79AB /* TeslaTimestampTests */ = {
+			isa = PBXGroup;
+			children = (
+				678425E402D723DC0A789422 /* TeslaNamingTests.swift */,
+				F689652906E0CC10BB61D574 /* ClipPathParserTests.swift */,
+				313AED8916592772866DDBA6 /* EventJsonTests.swift */,
+				487FBD7EF00444181245130B /* OverlayStyleTests.swift */,
+				B843DA0DD7B2A0430035ACFD /* TeslaCamScannerTests.swift */,
+				0C5044216531EC0052FEC1E3 /* TimestampTranscoderTests.swift */,
+			);
+			name = TeslaTimestampTests;
+			sourceTree = "<group>";
+		};
+		C165EB5F1BF36CBC32477D82 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				C0C1D08515E685F6C4478282 /* TeslaTimestampApp.swift */,
+				2EE0D0A9B97E955EFDF7CE35 /* Info.plist */,
+			);
+			name = App;
+			sourceTree = "<group>";
+		};
+		EDF1A2FE0C43F786355E70BB /* UI/Sheets */ = {
+			isa = PBXGroup;
+			children = (
+				0A2A44B599D33E685200451C /* PreviewSheetView.swift */,
+				77DB7D2B669634B2D4222E6E /* ResultsSheetView.swift */,
+				B1AAFED51CE05A2CB7A5E449 /* VideoPlayerSheetView.swift */,
+			);
+			name = UI/Sheets;
+			sourceTree = "<group>";
+		};
+		EFD2304E069BD0B8E7315F79 /* Core/Media */ = {
+			isa = PBXGroup;
+			children = (
+				27281B10A93A4F6450235E03 /* OverlayStyle.swift */,
+				C21A5CEFF113E3C3C3667019 /* OverlayBitmapFactory.swift */,
+				B044720CE3F9CECB4ECB7E60 /* PreviewComposer.swift */,
+				E0D05B5A7F1B5B2B8D312F95 /* TimestampTranscoder.swift */,
+				6D630BFAB50FEEABBAE7432D /* TimestampVideoProcessor.swift */,
+			);
+			name = Core/Media;
+			sourceTree = "<group>";
+		};
+		F2447827BB879C082ADBC518 /* TeslaTimestamp */ = {
+			isa = PBXGroup;
+			children = (
+				C165EB5F1BF36CBC32477D82 /* App */,
+				3D9FD67626A67C9203603F79 /* Core/Data */,
+				EFD2304E069BD0B8E7315F79 /* Core/Media */,
+				6665143C17F220C0EF893887 /* Export */,
+				6A721B77B898461B2EBA6217 /* USB */,
+				65D0C7A4240F7D6DC53926AC /* UI */,
+				EDF1A2FE0C43F786355E70BB /* UI/Sheets */,
+				F5F9E67494C9FF01284782D9 /* Resources */,
+			);
+			name = TeslaTimestamp;
+			sourceTree = "<group>";
+		};
+		F5F9E67494C9FF01284782D9 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				A1ABDED51C2BEC029D9DDFA3 /* Assets.xcassets */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		BD848E788EAC0A6A29C4B618 /* TeslaTimestampTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 748814ABABF3D104B7CDB0BB /* Build configuration list for PBXNativeTarget "TeslaTimestampTests" */;
+			buildPhases = (
+				0DE9884D512CF3241019A15E /* Sources */,
+				1B6FBB1D95CDF0E47E3BC288 /* Frameworks */,
+				8D8A734C83AED8CB6CFEAED1 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2D0810A73B4765B861E5BDCB /* PBXTargetDependency */,
+			);
+			name = TeslaTimestampTests;
+			productName = TeslaTimestampTests;
+			productReference = C4E1EFB66B7068B281D9D2FE /* TeslaTimestampTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		CC6F95109BBF0F8EA776EC0A /* TeslaTimestamp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 11C5A2B9446FB257D430F827 /* Build configuration list for PBXNativeTarget "TeslaTimestamp" */;
+			buildPhases = (
+				CDBAA4CFDE304E0C4B3617D7 /* Sources */,
+				0B8DA9AA4AA8CA652E3473FA /* Frameworks */,
+				0C6924F3086872EF42E191E9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TeslaTimestamp;
+			productName = TeslaTimestamp;
+			productReference = AB6517ED06B9D72324AB39C9 /* TeslaTimestamp.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		9E88446A3F44B57E975BE17B /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					BD848E788EAC0A6A29C4B618 = {
+						CreatedOnToolsVersion = 16.0;
+						TestTargetID = CC6F95109BBF0F8EA776EC0A;
+					};
+					CC6F95109BBF0F8EA776EC0A = {
+						CreatedOnToolsVersion = 16.0;
+					};
+				};
+			};
+			buildConfigurationList = C6A90BBDAB5647F0B4F217EA /* Build configuration list for PBXProject "TeslaTimestamp" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = zh_CN;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				zh_CN,
+				Base,
+			);
+			mainGroup = 2EB2D8158FC6EF9EB19CB439;
+			productRefGroup = 1E78B559816E575FC0BDB29C /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				CC6F95109BBF0F8EA776EC0A /* TeslaTimestamp */,
+				BD848E788EAC0A6A29C4B618 /* TeslaTimestampTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		0C6924F3086872EF42E191E9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0616325308B7BBE1BEE1C1E6 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8D8A734C83AED8CB6CFEAED1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		0DE9884D512CF3241019A15E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F03520695E52C8E37F191579 /* TeslaNamingTests.swift in Sources */,
+				C115164F61C8D68A1942E1D7 /* ClipPathParserTests.swift in Sources */,
+				294ED5CF703F12E2F774419D /* EventJsonTests.swift in Sources */,
+				D7C50FEDB97284B8A11553DE /* OverlayStyleTests.swift in Sources */,
+				0B154C7311C1B33771DAD557 /* TeslaCamScannerTests.swift in Sources */,
+				329B18BC57189C3763E45B2F /* TimestampTranscoderTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CDBAA4CFDE304E0C4B3617D7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				04C46F8B8CCF12836E2E1E27 /* TeslaTimestampApp.swift in Sources */,
+				1F02EF56D8BFBB0AA152738E /* TeslaNaming.swift in Sources */,
+				52A41311BD49C99365176C44 /* ClipModels.swift in Sources */,
+				188FE9EA6B01A675D499CB77 /* ClipPath.swift in Sources */,
+				17925F132CD4DD36AD47D415 /* EventJson.swift in Sources */,
+				6B83AF5FE7D72364C990B53D /* TimeFormats.swift in Sources */,
+				AAC5A59FC94EB42215E84586 /* MediaSource.swift in Sources */,
+				2583CE0E432106DDBF590DD7 /* TeslaCamScanner.swift in Sources */,
+				6B1D34869761C732F5B1D1FD /* OverlayStyle.swift in Sources */,
+				6B1A06A850169B06AC694FDB /* OverlayBitmapFactory.swift in Sources */,
+				4B85AF772C4AFC38E6982C8D /* PreviewComposer.swift in Sources */,
+				F4C3E9E772458D47371FAECA /* TimestampTranscoder.swift in Sources */,
+				DB858C2389C64835E64F7C7F /* TimestampVideoProcessor.swift in Sources */,
+				506FE2E9262FFD76ADD91551 /* PhotoLibraryExporter.swift in Sources */,
+				6F88F885FA6E96F2396569C7 /* UsbVolumeMonitor.swift in Sources */,
+				5151213B724986739E53001E /* DesignTokens.swift in Sources */,
+				3C4419A89C7E9FAB722E9C9A /* ThumbnailLoader.swift in Sources */,
+				388209F6C986BEEF70EB0150 /* MainViewModel.swift in Sources */,
+				640EEF669969E04D4C04BD42 /* DocumentPickers.swift in Sources */,
+				E3F8747BC224DD6ACCC6C527 /* HeaderCardsView.swift in Sources */,
+				15788A18CAD9F125C6C0A921 /* ClipCardView.swift in Sources */,
+				CC0E9D88AC8EE47C5392552F /* MainView.swift in Sources */,
+				05152E0064832D60D2995652 /* PreviewSheetView.swift in Sources */,
+				2B507F04BFDE3D22BA2290A2 /* ResultsSheetView.swift in Sources */,
+				04E5C801BA4130ABC6416B24 /* VideoPlayerSheetView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		2D0810A73B4765B861E5BDCB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CC6F95109BBF0F8EA776EC0A /* TeslaTimestamp */;
+			targetProxy = E70CB3E06A6E72407B296985 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		4E1DB254493716C2891DA8FA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		5080F901486A27FCF1F9EB25 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.teslacam.timestamp.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TeslaTimestamp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/TeslaTimestamp";
+			};
+			name = Debug;
+		};
+		592082B555E313494AF92246 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = TeslaTimestamp/App/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.teslacam.timestamp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		981EB8DAFC83E868621991F6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				ENABLE_TESTABILITY = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		BBDE2CA8DCA50EFE424506B4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = TeslaTimestamp/App/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.teslacam.timestamp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		D5DFAB747BC57B7341CF384C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.teslacam.timestamp.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TeslaTimestamp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/TeslaTimestamp";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		11C5A2B9446FB257D430F827 /* Build configuration list for PBXNativeTarget "TeslaTimestamp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				592082B555E313494AF92246 /* Debug */,
+				BBDE2CA8DCA50EFE424506B4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		748814ABABF3D104B7CDB0BB /* Build configuration list for PBXNativeTarget "TeslaTimestampTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5080F901486A27FCF1F9EB25 /* Debug */,
+				D5DFAB747BC57B7341CF384C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C6A90BBDAB5647F0B4F217EA /* Build configuration list for PBXProject "TeslaTimestamp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				981EB8DAFC83E868621991F6 /* Debug */,
+				4E1DB254493716C2891DA8FA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 9E88446A3F44B57E975BE17B /* Project object */;
+}

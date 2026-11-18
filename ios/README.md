@@ -1,5 +1,7 @@
 # Tesla 时间戳（iOS）
 
+[![iOS CI](https://github.com/hpeng526/tesla-timestamp/actions/workflows/ios.yml/badge.svg)](https://github.com/hpeng526/tesla-timestamp/actions/workflows/ios.yml)
+
 把特斯拉行车记录仪（TeslaCam）U 盘里的视频读出来，**在 iPhone / iPad 上逐帧把时间戳烧录进画面**，再导出到系统相册。
 
 本项目是仓库 Android 应用（[`../android/`](../android/)）与桌面脚本（`add_timestamp.sh` / `add_timestamp.ps1`）的原生 iOS / iPadOS 版本：
@@ -85,7 +87,25 @@ ios/
 └── TeslaTimestampTests/             单元测试与视频转码测试
 ```
 
-## 构建与运行
+## 下载与安装
+
+### 方式一：下载未签名 IPA 自签安装（无需 Mac / 无需付费开发者账号）
+
+从仓库 [Releases](https://github.com/hpeng526/tesla-timestamp/releases) 下载 `tesla-timestamp-vX.Y.Z-unsigned.ipa`，使用任一常见工具配合你自己的免费 Apple ID 签名安装即可：
+
+- **[Sideloadly](https://sideloadly.io/)**（Windows / macOS，最简单）：连接手机 → 拖入 `.ipa` → 输入 Apple ID 一键安装（首次需在手机“设置 → 通用 → VPN 与设备管理”中信任开发者，并开启开发者模式）。
+- **[AltStore](https://altstore.io/) / [SideStore](https://sidestore.io/)**：支持在手机端同 Wi-Fi / 本地 VPN 自动续签，免去免费证书 7 天过期的手动重签。
+- **[LiveContainer](https://github.com/LiveContainer/LiveContainer)**：导入未签名 `.ipa` 直接在容器内运行，不额外占用免费账号的 3 个 App 名额。
+- **TrollStore（巨魔）**：已包内附带 ad-hoc `CodeDirectory` 哈希，支持巨魔的设备可直接永久免签安装。
+
+### 方式二：怎么发一个新版本（维护者）
+
+- **本地打标签推送**：`git tag -a v1.0.2 -m "Release v1.0.2" && git push origin v1.0.2`，`Android CI` 与 `iOS CI` 会自动并行构建，把 `.apk` 和 `-unsigned.ipa` 上传到同一个 Release。
+- **网页一键发布**：仓库 `Actions` → `Android CI`（同时发双端）或 `iOS CI`（仅构建/补传 iOS IPA）→ **Run workflow** → 填版本号（如 `1.0.2`）即可。
+
+---
+
+## 本地源码构建与运行
 
 环境：macOS + Xcode 15.0+（部署目标 iOS 16.0+）。
 

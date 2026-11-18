@@ -15,9 +15,6 @@ on:
         type: boolean
         default: false
 
-permissions:
-  contents: read
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -30,6 +27,8 @@ jobs:
   build:
     name: Build & Test
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     # secrets 不能出现在 if 里，先落到 env，再用 env 判断是否已配置签名密钥
     env:
       ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
@@ -178,13 +177,6 @@ jobs:
           done
           ls -la
 
-      - name: Remove previous release for this tag
-        if: env.ANDROID_KEYSTORE_BASE64 != ''
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GH_REPO: ${{ github.repository }}
-        run: gh release delete "${{ steps.tag.outputs.name }}" --yes || true
-
       - name: Publish release
         if: env.ANDROID_KEYSTORE_BASE64 != ''
         uses: softprops/action-gh-release@v2
@@ -193,3 +185,15 @@ jobs:
           files: dist/*.apk
           generate_release_notes: true
           prerelease: ${{ github.event_name == 'workflow_dispatch' && inputs.prerelease || false }}
+
+  # 手动触发发布时同步构建并附上 iOS 未签名 IPA（打标签推送时 ios.yml 会自动并行触发）
+  ios_release:
+    name: Build & Publish iOS IPA
+    if: github.event_name == 'workflow_dispatch'
+    needs: release
+    permissions:
+      contents: write
+    uses: ./.github/workflows/ios.yml
+    with:
+      version: ${{ inputs.version }}
+      prerelease: ${{ inputs.prerelease }}

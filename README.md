@@ -1,6 +1,7 @@
 # tesla-timestamp
 
 [![Android CI](https://github.com/hpeng526/tesla-timestamp/actions/workflows/android.yml/badge.svg)](https://github.com/hpeng526/tesla-timestamp/actions/workflows/android.yml)
+[![iOS CI](https://github.com/hpeng526/tesla-timestamp/actions/workflows/ios.yml/badge.svg)](https://github.com/hpeng526/tesla-timestamp/actions/workflows/ios.yml)
 
 给特斯拉行车记录仪（TeslaCam）视频叠加时间戳的小工具集合。
 
@@ -16,8 +17,8 @@
 无需 ffmpeg、纯本地硬件加速处理，支持 TeslaCam 的 RecentClips / SavedClips / SentryClips 目录结构，
 兼容 HW3 与 HW4（AI4）的 4 路 / 6 路相机素材。
 
-- **Android**：功能、使用步骤与构建方式见 [android/README.md](android/README.md)。
-- **iOS**：功能、使用步骤与构建方式见 [ios/README.md](ios/README.md)。
+- **Android**：安装包下载（Releases 里的 `.apk`）、功能与构建方式见 [android/README.md](android/README.md)。
+- **iOS**：未签名安装包下载（Releases 里的 `-unsigned.ipa`，支持 Sideloadly / AltStore / SideStore / TrollStore 自签安装）、功能与构建方式见 [ios/README.md](ios/README.md)。
 
 ```bash
 # Android 构建与安装

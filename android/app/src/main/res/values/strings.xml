@@ -12,7 +12,7 @@
     <string name="source_none">尚未选择 TeslaCam 文件夹</string>
     <string name="action_add_folder">添加 U 盘 / 文件夹</string>
     <string name="action_pick_file">单个视频</string>
-    <string name="action_pick_path">本地路径</string>
+    <string name="action_pick_album">从相册选</string>
     <string name="action_rescan">重新扫描</string>
     <string name="action_help">说明</string>
 
@@ -27,7 +27,7 @@
     <string name="empty_title">还没有选择视频</string>
     <string name="empty_body">连接 U 盘后选择 TeslaCam 文件夹，应用会自动按片段整理前视 / 后视 / 左右视频，勾选后即可把时间戳烧录进画面。</string>
     <string name="empty_step1">1  通过 OTG 连接记录仪 U 盘</string>
-    <string name="empty_step2">2  选择 TeslaCam 文件夹（或单个视频）</string>
+    <string name="empty_step2">2  选择 TeslaCam 文件夹、单个视频或从相册选</string>
     <string name="empty_step3">3  勾选片段 → 预览 → 合成</string>
 
     <string name="summary_none">勾选片段后开始合成</string>
@@ -49,7 +49,7 @@
     <string name="status_scanning">正在扫描 …</string>
     <string name="status_preview">正在生成预览 …</string>
     <string name="status_no_selection">请先勾选要处理的视频</string>
-    <string name="status_permission">需要读取视频的权限才能扫描本地路径</string>
+    <string name="status_permission">需要读取视频的权限才能访问视频文件</string>
     <string name="status_cancelled">已取消</string>
 
     <string name="clip_meta">%1$s · %2$d 个视频 · %3$s</string>
@@ -63,10 +63,6 @@
     <string name="results_title">合成完成</string>
     <string name="result_message">已导出 %1$d 个视频到相册 Movies/TeslaTimestamp</string>
     <string name="player_title">播放合成结果</string>
-
-    <string name="dialog_path_title">输入 TeslaCam 目录路径</string>
-    <string name="dialog_path_hint">/sdcard/Download/TeslaCam</string>
-    <string name="dialog_path_confirm">扫描</string>
 
     <string name="menu_help">使用说明</string>
     <string name="help_title">使用说明</string>

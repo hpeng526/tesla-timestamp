@@ -104,38 +104,67 @@ public final class TeslaCamScanner: Sendable {
         securityScoped: Bool = true,
         timeZone: TimeZone = .current
     ) throws -> ScanResult {
-        let started = securityScoped ? url.startAccessingSecurityScopedResource() : false
-        defer {
-            if started { url.stopAccessingSecurityScopedResource() }
+        try scanFiles(urls: [url], securityScoped: securityScoped, sourceLabel: nil, timeZone: timeZone)
+    }
+
+    public func scanFiles(
+        urls: [URL],
+        securityScoped: Bool = true,
+        sourceLabel: String? = nil,
+        timeZone: TimeZone = .current
+    ) throws -> ScanResult {
+        var entries: [ScanEntry] = []
+        entries.reserveCapacity(urls.count)
+
+        for (index, url) in urls.enumerated() {
+            let started = securityScoped ? url.startAccessingSecurityScopedResource() : false
+            defer {
+                if started { url.stopAccessingSecurityScopedResource() }
+            }
+
+            guard FileManager.default.fileExists(atPath: url.path) else {
+                if urls.count == 1 {
+                    throw ScanError.notFound(url.lastPathComponent)
+                }
+                continue
+            }
+
+            let displayName = url.lastPathComponent.isEmpty ? "video_\(index + 1).mp4" : url.lastPathComponent
+            let source = MediaSource(
+                url: url,
+                displayName: displayName,
+                securityScopeRootURL: securityScoped ? url : nil
+            )
+            let size = source.sizeBytes()
+            let lastModified = source.lastModifiedMillis()
+            let identity = ClipPathParser.parse(displayName, timeZone: timeZone)
+
+            // Also check sibling event.json if accessible (e.g. when picking from SavedClips folder).
+            let parentEvent = readEventJson(at: url.deletingLastPathComponent().appendingPathComponent("event.json"))
+
+            entries.append(
+                ScanEntry(
+                    relativePath: displayName,
+                    fileName: displayName,
+                    source: source,
+                    sizeBytes: size,
+                    lastModified: lastModified,
+                    identity: identity,
+                    eventInfo: parentEvent
+                )
+            )
         }
 
-        guard FileManager.default.fileExists(atPath: url.path) else {
-            throw ScanError.notFound(url.lastPathComponent)
+        let label: String
+        if let sourceLabel, !sourceLabel.isEmpty {
+            label = sourceLabel
+        } else if entries.count == 1, let first = entries.first {
+            label = first.fileName
+        } else {
+            label = "相册 · \(entries.count) 个视频"
         }
 
-        let displayName = url.lastPathComponent.isEmpty ? "video.mp4" : url.lastPathComponent
-        let source = MediaSource(
-            url: url,
-            displayName: displayName,
-            securityScopeRootURL: securityScoped ? url : nil
-        )
-        let size = source.sizeBytes()
-        let lastModified = source.lastModifiedMillis()
-        let identity = ClipPathParser.parse(displayName, timeZone: timeZone)
-
-        // Also check sibling event.json if accessible (e.g. when picking from SavedClips folder).
-        let parentEvent = readEventJson(at: url.deletingLastPathComponent().appendingPathComponent("event.json"))
-
-        let entry = ScanEntry(
-            relativePath: displayName,
-            fileName: displayName,
-            source: source,
-            sizeBytes: size,
-            lastModified: lastModified,
-            identity: identity,
-            eventInfo: parentEvent
-        )
-        return finish(entries: [entry], extraWarnings: [], sourceLabel: displayName)
+        return finish(entries: entries, extraWarnings: [], sourceLabel: label)
     }
 
     // MARK: - Private

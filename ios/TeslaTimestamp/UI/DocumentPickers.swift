@@ -1,4 +1,5 @@
 #if canImport(UIKit)
+import PhotosUI
 import SwiftUI
 import UIKit
 import UniformTypeIdentifiers
@@ -66,6 +67,42 @@ struct VideoDocumentPicker: UIViewControllerRepresentable {
         func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
             guard let first = urls.first else { return }
             onPick(first)
+        }
+    }
+}
+
+/// Wraps `PHPickerViewController` to pick one or more videos from the system Photos library
+/// without requiring full photo-library read permission.
+struct AlbumVideoPicker: UIViewControllerRepresentable {
+    let onPick: ([NSItemProvider]) -> Void
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(onPick: onPick)
+    }
+
+    func makeUIViewController(context: Context) -> PHPickerViewController {
+        var config = PHPickerConfiguration()
+        config.filter = .videos
+        config.selectionLimit = 0
+        config.preferredAssetRepresentationMode = .current
+        let picker = PHPickerViewController(configuration: config)
+        picker.delegate = context.coordinator
+        return picker
+    }
+
+    func updateUIViewController(_ uiViewController: PHPickerViewController, context: Context) {}
+
+    final class Coordinator: NSObject, PHPickerViewControllerDelegate {
+        let onPick: ([NSItemProvider]) -> Void
+
+        init(onPick: @escaping ([NSItemProvider]) -> Void) {
+            self.onPick = onPick
+        }
+
+        func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+            picker.dismiss(animated: true)
+            guard !results.isEmpty else { return }
+            onPick(results.map(\.itemProvider))
         }
     }
 }

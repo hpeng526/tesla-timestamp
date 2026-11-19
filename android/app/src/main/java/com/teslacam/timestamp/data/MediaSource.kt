@@ -36,8 +36,27 @@ sealed class MediaSource {
         is Document -> try {
             context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
                 if (cursor.moveToFirst()) {
-                    val index = cursor.getColumnIndex(android.provider.DocumentsContract.Document.COLUMN_LAST_MODIFIED)
-                    if (index >= 0 && !cursor.isNull(index)) cursor.getLong(index) else 0L
+                    val docMod = cursor.getColumnIndex(android.provider.DocumentsContract.Document.COLUMN_LAST_MODIFIED)
+                    if (docMod >= 0 && !cursor.isNull(docMod)) {
+                        val value = cursor.getLong(docMod)
+                        if (value > 0L) return@use value
+                    }
+                    val dateTaken = cursor.getColumnIndex(android.provider.MediaStore.MediaColumns.DATE_TAKEN)
+                    if (dateTaken >= 0 && !cursor.isNull(dateTaken)) {
+                        val value = cursor.getLong(dateTaken)
+                        if (value > 0L) return@use value
+                    }
+                    val dateMod = cursor.getColumnIndex(android.provider.MediaStore.MediaColumns.DATE_MODIFIED)
+                    if (dateMod >= 0 && !cursor.isNull(dateMod)) {
+                        val seconds = cursor.getLong(dateMod)
+                        if (seconds > 0L) return@use seconds * 1000L
+                    }
+                    val dateAdded = cursor.getColumnIndex(android.provider.MediaStore.MediaColumns.DATE_ADDED)
+                    if (dateAdded >= 0 && !cursor.isNull(dateAdded)) {
+                        val seconds = cursor.getLong(dateAdded)
+                        if (seconds > 0L) return@use seconds * 1000L
+                    }
+                    0L
                 } else {
                     0L
                 }

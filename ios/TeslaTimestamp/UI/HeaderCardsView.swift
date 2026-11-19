@@ -7,7 +7,7 @@ struct DataSourceCardView: View {
     @ObservedObject var viewModel: MainViewModel
     let onPickFolder: () -> Void
     let onPickFile: () -> Void
-    let onPickPath: () -> Void
+    let onPickAlbum: () -> Void
 
     private var controlsEnabled: Bool {
         !viewModel.running && !viewModel.scanning
@@ -102,12 +102,12 @@ struct DataSourceCardView: View {
 
                 Button {
                     Haptics.tap()
-                    onPickPath()
+                    onPickAlbum()
                 } label: {
                     HStack(spacing: 6) {
-                        Image(systemName: "folder.badge.gearshape")
+                        Image(systemName: "photo.on.rectangle")
                             .font(.system(size: 14, weight: .semibold))
-                        Text("本地路径")
+                        Text("从相册选")
                             .font(.system(size: 14, weight: .medium))
                     }
                     .foregroundStyle(TeslaColors.onSurface)
@@ -319,7 +319,7 @@ struct EmptyClipsCardView: View {
 
             VStack(alignment: .leading, spacing: 8) {
                 stepRow("1  通过 USB-C / OTG 转接头连接记录仪 U 盘")
-                stepRow("2  在系统文件选择器中选中 TeslaCam 文件夹")
+                stepRow("2  选择 TeslaCam 文件夹、单个视频或从相册选")
                 stepRow("3  勾选片段 → 预览 → 合成导出到相册")
             }
             .frame(maxWidth: .infinity, alignment: .leading)

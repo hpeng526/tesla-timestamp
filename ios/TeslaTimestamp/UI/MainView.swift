@@ -7,8 +7,7 @@ public struct MainView: View {
 
     @State private var showFolderPicker = false
     @State private var showFilePicker = false
-    @State private var showPathPrompt = false
-    @State private var customPathText = MainViewModel.defaultLocalTeslaCamPath
+    @State private var showAlbumPicker = false
     @State private var showHelpAlert = false
 
     public init(viewModel: MainViewModel) {
@@ -32,12 +31,7 @@ public struct MainView: View {
                             viewModel: viewModel,
                             onPickFolder: { showFolderPicker = true },
                             onPickFile: { showFilePicker = true },
-                            onPickPath: {
-                                if customPathText.isEmpty {
-                                    customPathText = MainViewModel.defaultLocalTeslaCamPath
-                                }
-                                showPathPrompt = true
-                            }
+                            onPickAlbum: { showAlbumPicker = true }
                         )
 
                         OverlayStyleCardView(viewModel: viewModel)
@@ -107,6 +101,12 @@ public struct MainView: View {
             }
             .ignoresSafeArea()
         }
+        .sheet(isPresented: $showAlbumPicker) {
+            AlbumVideoPicker { providers in
+                viewModel.scanAlbumProviders(providers)
+            }
+            .ignoresSafeArea()
+        }
         .sheet(item: $viewModel.preview) { previewState in
             PreviewSheetView(
                 preview: previewState,
@@ -164,17 +164,6 @@ public struct MainView: View {
         .sheet(item: $viewModel.activeShareItem) { shareItem in
             VideoShareSheet(fileURL: shareItem.url)
                 .presentationDetents([.medium, .large])
-        }
-        .alert("输入 TeslaCam 目录路径", isPresented: $showPathPrompt) {
-            TextField("Documents/TeslaCam", text: $customPathText)
-                .textInputAutocapitalization(.never)
-                .autocorrectionDisabled()
-            Button("取消", role: .cancel) {}
-            Button("扫描") {
-                viewModel.scanPath(customPathText)
-            }
-        } message: {
-            Text("可输入应用沙盒 Documents/TeslaCam 路径或已授权的本地目录路径。")
         }
         .alert("使用说明", isPresented: $showHelpAlert) {
             Button("好", role: .cancel) {}

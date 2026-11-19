@@ -9,12 +9,9 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.text.InputType
 import android.view.HapticFeedbackConstants
 import android.view.View
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.TextView
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -67,6 +64,11 @@ class MainActivity : AppCompatActivity(), HeaderAdapter.Callbacks {
     private val pickDocument = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) viewModel.scanDocument(uri)
     }
+
+    private val pickAlbumVideos =
+        registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia()) { uris ->
+            if (uris.isNotEmpty()) viewModel.scanAlbumVideos(uris)
+        }
 
     private val requestPermission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
@@ -152,9 +154,13 @@ class MainActivity : AppCompatActivity(), HeaderAdapter.Callbacks {
             .onFailure { toast("无法打开文件选择器") }
     }
 
-    override fun onPickPath() {
+    override fun onPickAlbum() {
         haptic()
-        showPathDialog()
+        runCatching {
+            pickAlbumVideos.launch(
+                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly)
+            )
+        }.onFailure { toast("无法打开相册选择器") }
     }
 
     override fun onRescan() {
@@ -433,25 +439,6 @@ class MainActivity : AppCompatActivity(), HeaderAdapter.Callbacks {
     }
 
     // --------------------------------------------------------------------- dialogs
-
-    private fun showPathDialog() {
-        val density = resources.displayMetrics.density
-        val input = EditText(this).apply {
-            hint = getString(R.string.dialog_path_hint)
-            setText("/sdcard/Download/TeslaCam")
-            inputType = InputType.TYPE_CLASS_TEXT
-            setSingleLine()
-            setPadding((16 * density).toInt(), (12 * density).toInt(), (16 * density).toInt(), 0)
-        }
-        MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.dialog_path_title)
-            .setView(input)
-            .setNegativeButton(R.string.action_cancel, null)
-            .setPositiveButton(R.string.dialog_path_confirm) { _, _ ->
-                ensureStoragePermission { viewModel.scanPath(input.text.toString()) }
-            }
-            .show()
-    }
 
     private fun showHelp() {
         MaterialAlertDialogBuilder(this)

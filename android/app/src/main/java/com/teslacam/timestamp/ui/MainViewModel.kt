@@ -96,8 +96,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private var scanJob: kotlinx.coroutines.Job? = null
     private var workJob: kotlinx.coroutines.Job? = null
     private var lastTreeUri: Uri? = null
-    private var lastPath: String? = null
     private var lastDocumentUri: Uri? = null
+    private var lastAlbumUris: List<Uri>? = null
     private var lastProgressStep = -1
 
     // ---------------------------------------------------------------- scanning
@@ -110,34 +110,41 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             )
         }
         lastTreeUri = uri
-        lastPath = null
         lastDocumentUri = null
+        lastAlbumUris = null
         runScan { progress -> scanner.scanTree(uri, onProgress = progress) }
-    }
-
-    fun scanPath(rawPath: String) {
-        val file = normalizePath(rawPath)
-        lastTreeUri = null
-        lastPath = file.absolutePath
-        lastDocumentUri = null
-        runScan { progress -> scanner.scanDirectory(file, onProgress = progress) }
     }
 
     fun scanDocument(uri: Uri) {
         lastTreeUri = null
-        lastPath = null
         lastDocumentUri = uri
+        lastAlbumUris = null
         runScan { scanner.scanDocument(uri) }
+    }
+
+    fun scanAlbumVideos(uris: List<Uri>) {
+        if (uris.isEmpty()) return
+        val resolver = getApplication<Application>().contentResolver
+        uris.forEach { uri ->
+            runCatching {
+                resolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+        }
+        lastTreeUri = null
+        lastDocumentUri = null
+        lastAlbumUris = uris
+        val label = if (uris.size == 1) null else "相册 · ${uris.size} 个视频"
+        runScan { scanner.scanDocuments(uris, sourceLabel = label) }
     }
 
     fun rescan() {
         val tree = lastTreeUri
-        val path = lastPath
         val document = lastDocumentUri
+        val album = lastAlbumUris
         when {
             tree != null -> scanTree(tree)
-            path != null -> scanPath(path)
             document != null -> scanDocument(document)
+            album != null -> scanAlbumVideos(album)
             else -> post(Message("请先选择 U 盘目录或视频文件"))
         }
     }
@@ -461,18 +468,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         val stamp = TimeFormats.dateTime(group.startEpochMillis).replace(":", "-").replace(" ", "_")
         val camera = file.camera ?: "video"
         return stamp + "_" + camera + "_timestamped.mp4"
-    }
-
-    private fun normalizePath(raw: String): File {
-        var path = raw.trim()
-        if (path.isEmpty()) throw IllegalArgumentException("路径为空")
-        if (path.startsWith("~/")) {
-            path = path.substring(2)
-        }
-        if (!path.startsWith("/")) {
-            path = "/storage/emulated/0/" + path
-        }
-        return File(path)
     }
 
     @Volatile

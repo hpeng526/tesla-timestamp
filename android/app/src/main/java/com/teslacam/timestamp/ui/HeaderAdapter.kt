@@ -15,7 +15,7 @@ class HeaderAdapter(private val callbacks: Callbacks) : RecyclerView.Adapter<Rec
     interface Callbacks {
         fun onPickFolder()
         fun onPickFile()
-        fun onPickPath()
+        fun onPickAlbum()
         fun onRescan()
         fun onPreview()
         fun onStyleChanged(positionIndex: Int, sizeIndex: Int, showDate: Boolean, showDetails: Boolean)
@@ -75,7 +75,7 @@ class HeaderAdapter(private val callbacks: Callbacks) : RecyclerView.Adapter<Rec
         init {
             binding.btnPickFolder.setOnClickListener { callbacks.onPickFolder() }
             binding.btnPickFile.setOnClickListener { callbacks.onPickFile() }
-            binding.btnPickPath.setOnClickListener { callbacks.onPickPath() }
+            binding.btnPickAlbum.setOnClickListener { callbacks.onPickAlbum() }
             binding.btnRescan.setOnClickListener { callbacks.onRescan() }
         }
 
@@ -88,7 +88,7 @@ class HeaderAdapter(private val callbacks: Callbacks) : RecyclerView.Adapter<Rec
             val enabled = !state.running && !state.scanning
             binding.btnPickFolder.isEnabled = enabled
             binding.btnPickFile.isEnabled = enabled
-            binding.btnPickPath.isEnabled = enabled
+            binding.btnPickAlbum.isEnabled = enabled
             binding.btnRescan.isEnabled = enabled && state.sourceLabel != binding.root.context.getString(R.string.source_none)
             binding.btnRescan.alpha = if (binding.btnRescan.isEnabled) 1f else 0.4f
         }

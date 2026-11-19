@@ -69,21 +69,36 @@ class TeslaCamScanner(private val context: Context) {
     }
 
     fun scanDocument(uri: Uri, zone: ZoneId = ZoneId.systemDefault()): ScanResult {
-        val displayName = documentDisplayName(uri) ?: "video.mp4"
-        val source = MediaSource.Document(uri, displayName)
-        val size = source.sizeBytes(context)
-        val lastModified = source.lastModified(context)
-        val identity = ClipPathParser.parse(displayName, zone)
-        val entry = ScanEntry(
-            relativePath = displayName,
-            fileName = displayName,
-            source = source,
-            sizeBytes = size,
-            lastModified = lastModified,
-            identity = identity,
-            eventInfo = null
-        )
-        return finish(listOf(entry), zone, displayName)
+        return scanDocuments(listOf(uri), sourceLabel = null, zone = zone)
+    }
+
+    fun scanDocuments(
+        uris: List<Uri>,
+        sourceLabel: String? = null,
+        zone: ZoneId = ZoneId.systemDefault()
+    ): ScanResult {
+        val entries = uris.mapIndexed { index, uri ->
+            val displayName = documentDisplayName(uri) ?: "video_${index + 1}.mp4"
+            val source = MediaSource.Document(uri, displayName)
+            val size = source.sizeBytes(context)
+            val lastModified = source.lastModified(context)
+            val identity = ClipPathParser.parse(displayName, zone)
+            ScanEntry(
+                relativePath = displayName,
+                fileName = displayName,
+                source = source,
+                sizeBytes = size,
+                lastModified = lastModified,
+                identity = identity,
+                eventInfo = null
+            )
+        }
+        val label = sourceLabel ?: if (entries.size == 1) {
+            entries.first().fileName
+        } else {
+            "相册 · " + entries.size + " 个视频"
+        }
+        return finish(entries, zone, label)
     }
 
     fun documentDisplayName(uri: Uri): String? {

@@ -1,8 +1,10 @@
 #if canImport(UIKit)
+import AVFoundation
 import Combine
 import Foundation
 import SwiftUI
 import UIKit
+import UniformTypeIdentifiers
 
 public struct ExportResult: Identifiable, Equatable, Sendable {
     public let id: UUID
@@ -101,11 +103,12 @@ public final class MainViewModel: ObservableObject {
     private enum LastSource {
         case folder(URL)
         case singleFile(URL)
-        case localPath(URL)
+        case albumFiles([URL], String?)
     }
 
     private var lastSource: LastSource?
     private var activeSecurityScopedURL: URL?
+    private var importedAlbumDirectory: URL?
     private var scanTask: Task<Void, Never>?
     private var workTask: Task<Void, Never>?
     private var toastTask: Task<Void, Never>?
@@ -116,6 +119,9 @@ public final class MainViewModel: ObservableObject {
 
     deinit {
         activeSecurityScopedURL?.stopAccessingSecurityScopedResource()
+        if let dir = importedAlbumDirectory {
+            try? FileManager.default.removeItem(at: dir)
+        }
     }
 
     // MARK: - Computed Helpers
@@ -171,19 +177,14 @@ public final class MainViewModel: ObservableObject {
         }
     }
 
-    public static var defaultLocalTeslaCamPath: String {
-        let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-        return docs?.appendingPathComponent("TeslaCam").path ?? "~/Documents/TeslaCam"
-    }
-
     // MARK: - USB Status
 
     public func refreshUsbStatus() {
         let activeURL: URL?
         switch lastSource {
-        case .folder(let url), .singleFile(let url), .localPath(let url):
+        case .folder(let url), .singleFile(let url):
             activeURL = url
-        case .none:
+        case .albumFiles, .none:
             activeURL = nil
         }
         let names = UsbVolumeMonitor.attachedVolumeNames(activeSourceURL: activeURL)
@@ -198,6 +199,7 @@ public final class MainViewModel: ObservableObject {
     // MARK: - Scanning
 
     public func scanFolder(url: URL) {
+        cleanupImportedAlbumDirectory()
         holdSecurityScope(for: url)
         lastSource = .folder(url)
         refreshUsbStatus()
@@ -208,6 +210,7 @@ public final class MainViewModel: ObservableObject {
     }
 
     public func scanDocument(url: URL) {
+        cleanupImportedAlbumDirectory()
         holdSecurityScope(for: url)
         lastSource = .singleFile(url)
         refreshUsbStatus()
@@ -217,18 +220,68 @@ public final class MainViewModel: ObservableObject {
         }
     }
 
-    public func scanPath(_ rawPath: String) {
-        do {
-            let folderURL = try normalizeLocalPath(rawPath)
-            releaseSecurityScope()
-            lastSource = .localPath(folderURL)
-            refreshUsbStatus()
-            let scannerRef = scanner
-            runScan { progress in
-                try scannerRef.scanFolder(url: folderURL, securityScoped: false, onProgress: progress)
+    public func scanAlbumProviders(_ providers: [NSItemProvider]) {
+        guard !providers.isEmpty else { return }
+        if running {
+            showToast("正在合成视频，请稍候再选择")
+            return
+        }
+        scanTask?.cancel()
+        releaseSecurityScope()
+        cleanupImportedAlbumDirectory()
+
+        scanning = true
+        scanMessage = "正在从相册导入 …"
+        alertError = nil
+        warnings = []
+
+        let sessionDir = FileManager.default.temporaryDirectory
+            .appendingPathComponent("PickedAlbumVideos", isDirectory: true)
+            .appendingPathComponent(UUID().uuidString, isDirectory: true)
+        importedAlbumDirectory = sessionDir
+        let scannerRef = scanner
+
+        scanTask = Task {
+            do {
+                try FileManager.default.createDirectory(at: sessionDir, withIntermediateDirectories: true)
+                var copiedURLs: [URL] = []
+                copiedURLs.reserveCapacity(providers.count)
+                var usedNames: Set<String> = []
+
+                for (index, provider) in providers.enumerated() {
+                    try Task.checkCancellation()
+                    if providers.count > 1 {
+                        scanMessage = "正在从相册导入 \(index + 1)/\(providers.count) …"
+                    }
+                    let url = try await Self.copyVideoFromProvider(
+                        provider,
+                        to: sessionDir,
+                        index: index,
+                        usedNames: &usedNames
+                    )
+                    copiedURLs.append(url)
+                }
+
+                try Task.checkCancellation()
+                let label: String? = copiedURLs.count == 1 ? nil : "相册 · \(copiedURLs.count) 个视频"
+                let result = try await Task.detached(priority: .userInitiated) {
+                    try scannerRef.scanFiles(urls: copiedURLs, securityScoped: false, sourceLabel: label)
+                }.value
+
+                guard !Task.isCancelled else {
+                    scanning = false
+                    return
+                }
+                lastSource = .albumFiles(copiedURLs, label)
+                applyScan(result)
+            } catch is CancellationError {
+                scanning = false
+                scanMessage = ""
+            } catch {
+                scanning = false
+                scanMessage = ""
+                alertError = "导入相册视频失败: \(error.localizedDescription)"
             }
-        } catch {
-            alertError = "扫描失败: \(error.localizedDescription)"
         }
     }
 
@@ -248,10 +301,10 @@ public final class MainViewModel: ObservableObject {
             runScan { _ in
                 try scannerRef.scanSingleFile(url: url, securityScoped: false)
             }
-        case .localPath(let url):
+        case .albumFiles(let urls, let label):
             let scannerRef = scanner
-            runScan { progress in
-                try scannerRef.scanFolder(url: url, securityScoped: false, onProgress: progress)
+            runScan { _ in
+                try scannerRef.scanFiles(urls: urls, securityScoped: false, sourceLabel: label)
             }
         }
     }
@@ -598,32 +651,106 @@ public final class MainViewModel: ObservableObject {
         activeSecurityScopedURL = nil
     }
 
+    private func cleanupImportedAlbumDirectory() {
+        if let dir = importedAlbumDirectory {
+            try? FileManager.default.removeItem(at: dir)
+            importedAlbumDirectory = nil
+        }
+    }
+
+    private static func copyVideoFromProvider(
+        _ provider: NSItemProvider,
+        to directory: URL,
+        index: Int,
+        usedNames: inout Set<String>
+    ) async throws -> URL {
+        let typeIdentifier: String
+        if provider.hasItemConformingToTypeIdentifier(UTType.mpeg4Movie.identifier) {
+            typeIdentifier = UTType.mpeg4Movie.identifier
+        } else {
+            typeIdentifier = UTType.movie.identifier
+        }
+
+        let suggestedBase = provider.suggestedName?
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .replacingOccurrences(of: "/", with: "_")
+            .replacingOccurrences(of: ":", with: "-")
+
+        let copiedResult: (url: URL, preferredName: String, sourceDate: Date?) = try await withCheckedThrowingContinuation { continuation in
+            provider.loadFileRepresentation(forTypeIdentifier: typeIdentifier) { tempURL, error in
+                if let error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+                guard let tempURL else {
+                    continuation.resume(throwing: NSError(
+                        domain: "TeslaTimestamp",
+                        code: 2,
+                        userInfo: [NSLocalizedDescriptionKey: "无法读取所选相册视频"]
+                    ))
+                    return
+                }
+                do {
+                    let ext = tempURL.pathExtension.isEmpty ? "mp4" : tempURL.pathExtension
+                    let rawName: String
+                    if let suggestedBase, !suggestedBase.isEmpty {
+                        if (suggestedBase as NSString).pathExtension.isEmpty {
+                            rawName = "\(suggestedBase).\(ext)"
+                        } else {
+                            rawName = suggestedBase
+                        }
+                    } else if !tempURL.lastPathComponent.isEmpty {
+                        rawName = tempURL.lastPathComponent
+                    } else {
+                        rawName = "album_video_\(index + 1).\(ext)"
+                    }
+
+                    let sourceValues = try? tempURL.resourceValues(forKeys: [.creationDateKey, .contentModificationDateKey])
+                    let sourceDate = sourceValues?.creationDate ?? sourceValues?.contentModificationDate
+
+                    // Copy synchronously before loadFileRepresentation cleans up tempURL.
+                    let stagingURL = directory.appendingPathComponent("staged_\(index)_\(UUID().uuidString).\(ext)")
+                    try FileManager.default.copyItem(at: tempURL, to: stagingURL)
+                    continuation.resume(returning: (stagingURL, rawName, sourceDate))
+                } catch {
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+
+        // Rename staged file to a unique display filename on the caller's actor.
+        let preferredName = copiedResult.preferredName
+        var candidate = preferredName
+        var suffix = 2
+        while usedNames.contains(candidate.lowercased()) {
+            let stem = (preferredName as NSString).deletingPathExtension
+            let fileExt = (preferredName as NSString).pathExtension
+            candidate = fileExt.isEmpty ? "\(stem)_\(suffix)" : "\(stem)_\(suffix).\(fileExt)"
+            suffix += 1
+        }
+        usedNames.insert(candidate.lowercased())
+
+        let finalURL = directory.appendingPathComponent(candidate)
+        try FileManager.default.moveItem(at: copiedResult.url, to: finalURL)
+
+        // Preserve original recording timestamp from video metadata (or source file date) so
+        // non-Tesla filenames still burn the authentic capture time.
+        let asset = AVURLAsset(url: finalURL)
+        let creationItem = try? await asset.load(.creationDate)
+        let metadataDate = try? await creationItem?.load(.dateValue)
+        if let effectiveDate = metadataDate ?? copiedResult.sourceDate {
+            try? FileManager.default.setAttributes([.modificationDate: effectiveDate], ofItemAtPath: finalURL.path)
+        }
+
+        return finalURL
+    }
+
     private static func outputName(group: ClipGroup, file: ClipFile) -> String {
         let stamp = TimeFormats.dateTime(group.startEpochMillis)
             .replacingOccurrences(of: ":", with: "-")
             .replacingOccurrences(of: " ", with: "_")
         let camera = file.camera ?? "video"
         return "\(stamp)_\(camera)_timestamped.mp4"
-    }
-
-    private func normalizeLocalPath(_ raw: String) throws -> URL {
-        var path = raw.trimmingCharacters(in: .whitespacesAndNewlines)
-        if path.isEmpty {
-            throw NSError(
-                domain: "TeslaTimestamp",
-                code: 1,
-                userInfo: [NSLocalizedDescriptionKey: "路径为空"]
-            )
-        }
-        if path.hasPrefix("~/") {
-            let home = NSHomeDirectory()
-            path = home + String(path.dropFirst(1))
-        } else if !path.hasPrefix("/") {
-            let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.path
-                ?? NSHomeDirectory()
-            path = (docs as NSString).appendingPathComponent(path)
-        }
-        return URL(fileURLWithPath: path, isDirectory: true)
     }
 }
 #endif

@@ -100,13 +100,15 @@
                 app:iconGravity="textStart" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnPickPath"
+                android:id="@+id/btnPickAlbum"
                 style="@style/Widget.TeslaCam.Button.Outline"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                android:text="@string/action_pick_path" />
+                android:text="@string/action_pick_album"
+                app:icon="@drawable/ic_photo_library"
+                app:iconGravity="textStart" />
         </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

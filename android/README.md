@@ -162,6 +162,12 @@ adb install -r app/build/outputs/apk/debug/app-debug.apk
 
 `local.properties` 中需要 `sdk.dir=/path/to/Android/sdk`（该文件不入库）。
 
+## 屏幕自动化协议（SAEP）
+
+构建时从[策略模板](app/src/main/saep/agent_saep_policy.json)生成 `@raw/agent_saep_policy`，并把实际 `applicationId` 写入 `package`。P0310 固件会拒绝省略包名的策略。系统在安装或更新时通过 Manifest 读取策略。策略不额外限制常规界面操作，仅声明限制 Agent 代为最终发送或发布（`post_content`），不约束其他应用中的操作。策略修改后递增 `policy_version` 并更新 `updated_at`（Unix 毫秒字符串）。
+
+在已启用 SAEP 的 ObricUI 2.2 或更高版本上安装 APK，打开「使用说明」检查系统开关，再到助手的「自动化界面操作工具」确认对应包已列为支持。最后验证可信 Agent 可按系统规则进行预览和合成，并检查最终发布意图命中限制。普通 Android 应显示「未启用或不可用」，不影响原有功能。[SAEP 官方接入文档](https://o.doubao.com/SAEP_Protocol)
+
 ## 已做的验证
 
 ### 1. 合成素材（自制测试片）

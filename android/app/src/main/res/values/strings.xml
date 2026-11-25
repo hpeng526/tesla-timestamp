@@ -66,6 +66,8 @@
 
     <string name="menu_help">使用说明</string>
     <string name="help_title">使用说明</string>
+    <string name="saep_enabled">屏幕自动化协议（SAEP）已启用</string>
+    <string name="saep_unavailable">屏幕自动化协议（SAEP）未启用或不可用</string>
     <string name="help_body">1) 将特斯拉行车记录仪 U 盘通过 OTG 接到手机。\n2) 点击“添加 U 盘 / 文件夹”，在系统文件选择器中选择 U 盘里的 TeslaCam 文件夹。\n3) 应用会按片段整理前视 / 后视 / 左后 / 右后视频，并读取 event.json 中的地点信息。\n4) 勾选视频，可先点“预览”查看时间戳字号与位置。\n5) 点击“合成”，GPU 逐帧写入时间戳并重新编码 H.264，成品自动保存到相册 Movies/TeslaTimestamp。\n\n提示：1 分钟片段通常 5-15 秒即可完成（取决于手机性能）。</string>
 
     <string name="notice_title">提示</string>

@@ -3,6 +3,29 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
+@CacheableTask
+abstract class GenerateSaepPolicy : DefaultTask() {
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.RELATIVE)
+    abstract val template: RegularFileProperty
+
+    @get:Input
+    abstract val applicationId: Property<String>
+
+    @get:OutputDirectory
+    abstract val outputDirectory: DirectoryProperty
+
+    @TaskAction
+    fun generate() {
+        val source = template.get().asFile.readText()
+        val placeholder = "\${applicationId}"
+        check(placeholder in source) { "SAEP policy template is missing the applicationId placeholder" }
+        val resource = outputDirectory.file("raw/agent_saep_policy.json").get().asFile
+        resource.parentFile.mkdirs()
+        resource.writeText(source.replace(placeholder, applicationId.get()))
+    }
+}
+
 // CI 通过 BUILD_NUMBER 注入递增的构建号，本地构建时回退到 0。
 // versionCode 必须递增，否则手机上覆盖安装会失败。
 val buildNumber: Int = (System.getenv("BUILD_NUMBER") ?: "0").toIntOrNull() ?: 0
@@ -80,6 +103,17 @@ android {
 
     testOptions {
         unitTests.isReturnDefaultValues = true
+    }
+}
+
+androidComponents {
+    onVariants { variant ->
+        val generate = tasks.register<GenerateSaepPolicy>("generate${variant.name.replaceFirstChar { it.uppercaseChar() }}SaepPolicy") {
+            template.set(layout.projectDirectory.file("src/main/saep/agent_saep_policy.json"))
+            applicationId.set(variant.applicationId)
+            outputDirectory.set(layout.buildDirectory.dir("generated/saep/${variant.name}/res"))
+        }
+        variant.sources.res?.addGeneratedSourceDirectory(generate, GenerateSaepPolicy::outputDirectory)
     }
 }
 

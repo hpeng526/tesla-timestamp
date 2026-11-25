@@ -1,0 +1,18 @@
+{
+  "schema": "AGRP-Policy/1.0",
+  "policy_version": 2,
+  "package": "${applicationId}",
+  "updated_at": "1795592653000",
+  "default_policy": {
+    "app": {
+      "global_disable": false,
+      "screenshot_disable": false,
+      "input_disable": false
+    }
+  },
+  "scope": {
+    "agent_intents": {
+      "post_content": true
+    }
+  }
+}

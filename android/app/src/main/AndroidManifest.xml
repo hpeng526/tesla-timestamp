@@ -26,6 +26,10 @@
         android:theme="@style/Theme.TeslaCam"
         tools:targetApi="34">
 
+        <meta-data
+            android:name="com.obric.agentrobots.POLICY_JSON"
+            android:resource="@raw/agent_saep_policy" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

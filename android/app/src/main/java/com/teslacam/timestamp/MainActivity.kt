@@ -16,6 +16,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,6 +29,7 @@ import com.teslacam.timestamp.databinding.ItemResultBinding
 import com.teslacam.timestamp.databinding.SheetPlayerBinding
 import com.teslacam.timestamp.databinding.SheetPreviewBinding
 import com.teslacam.timestamp.databinding.SheetResultsBinding
+import com.teslacam.timestamp.saep.SaepStatus
 import com.teslacam.timestamp.ui.ClipAdapter
 import com.teslacam.timestamp.ui.ClipCard
 import com.teslacam.timestamp.ui.HeaderAdapter
@@ -38,6 +40,9 @@ import com.teslacam.timestamp.ui.ThumbnailLoader
 import com.teslacam.timestamp.ui.UiState
 import com.teslacam.timestamp.usb.UsbInfo
 import java.util.Locale
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity(), HeaderAdapter.Callbacks {
 
@@ -441,11 +446,17 @@ class MainActivity : AppCompatActivity(), HeaderAdapter.Callbacks {
     // --------------------------------------------------------------------- dialogs
 
     private fun showHelp() {
-        MaterialAlertDialogBuilder(this)
+        val dialog = MaterialAlertDialogBuilder(this)
             .setTitle(R.string.help_title)
             .setMessage(R.string.help_body)
             .setPositiveButton(R.string.action_ok, null)
             .show()
+        val context = applicationContext
+        lifecycleScope.launch {
+            val enabled = withContext(Dispatchers.IO) { SaepStatus.isEnabled(context) }
+            val status = getString(if (enabled) R.string.saep_enabled else R.string.saep_unavailable)
+            if (dialog.isShowing) dialog.setMessage(getString(R.string.help_body) + "\n\n" + status)
+        }
     }
 
     private fun handleViewIntent(intent: Intent?) {
